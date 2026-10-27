@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stejný model, jiný vstup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#FFFFFF;--surface:#FBF7EE;--line:#E6E0D0;--ink:#2D4173;--body:#4A5668;--muted:#66728A;--red:#E85252;--yellow:#FFCC00;--lblue:#62C4DD}
+@media (prefers-color-scheme: dark){:root{--bg:#17213B;--surface:#1F2B4D;--line:#34436E;--ink:#FFFFFF;--body:#D3DAE8;--muted:#A6B1C7;--red:#F06A6A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--body);font:17px/1.55 Rubik,system-ui,-apple-system,'Segoe UI',sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:40px max(16px,env(safe-area-inset-right)) 48px max(16px,env(safe-area-inset-left))}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin:0 0 6px}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.05;color:var(--ink);margin:0 0 14px}
+.lead{max-width:62ch;margin:0 0 28px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:18px}
+.card{background:var(--surface);border-radius:20px;padding:22px 24px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.card h2{margin:0;color:var(--ink);font-size:1.5rem}
+.tag{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+pre{white-space:pre-wrap;font:inherit;font-size:15px;margin:0;color:var(--ink);border-left:4px solid var(--lblue);padding:2px 0 2px 14px}
+.card.b pre{border-color:var(--red)}
+a.btn{align-self:flex-start;margin-top:auto;display:inline-block;background:var(--ink);color:var(--bg);text-decoration:none;font-weight:500;border-radius:999px;padding:10px 20px}
+a.btn:focus-visible{outline:3px solid var(--lblue);outline-offset:2px}
+.note{margin-top:28px;font-size:15px;color:var(--muted);max-width:75ch}
+.foot{margin-top:32px;padding-top:14px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+.foot a{color:inherit}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <p class="eyebrow">Vibecoding a designový proces</p>
+  <h1>Stejný model, jiný vstup</h1>
+  <p class="lead">Dvě aplikace pro zaměstnance divadla, které postavil stejný jazykový model. Liší se jen zadáním. Každou postavil samostatný agent, který věděl jen to, co stálo v jeho zadání.</p>
+  <div class="grid">
+    <section class="card">
+      <span class="tag">Aplikace A · z jedné věty</span>
+      <h2>Nápověda</h2>
+      <pre>„Udělej aplikaci, která zaměstnancům divadla pomůže víc využívat AI.“</pre>
+      <a class="btn" href="a/">Otevřít aplikaci A</a>
+    </section>
+    <section class="card b">
+      <span class="tag">Aplikace B · z výstupů Double Diamondu</span>
+      <h2>Co se mění</h2>
+      <pre>Zjištění z výzkumu: AI už používá 77,5 %, 97,5 % má problém dohledat soubory, plánovací systém zmínilo 11 ze 17.
+POV: zaměstnanec, kterého se změna v plánu týká, se o ní potřebuje dozvědět ve stejnou chvíli jako ostatní.
+HMW: Jak bychom mohli zařídit, aby se o změně v plánu dozvěděli všichni, koho se týká, včas a z jednoho místa?
+Koncept, obrazovky z mapy cesty, co v ní nebude a zelený semafor.</pre>
+      <a class="btn" href="b/">Otevřít aplikaci B</a>
+    </section>
+  </div>
+  <p class="note">Data v obou aplikacích jsou smyšlená. Koncept aplikace B je ukázka pro výuku postavená na veřejných zjištěních z případové studie, ne doporučení z výzkumu. Celá zadání jsou v <a href="https://github.com/katerina-svi/stejny-model-jiny-vstup">README repozitáře</a>.</p>
+  <p class="foot">Výukový materiál ke kurzu KISKED20 AI v praxi: Od nápadu k prototypu (KISK FF MUNI) · Kateřina Švidrnochová, <a href="https://svidrnochova.cz">svidrnochova.cz</a></p>
+</main>
+</body>
+</html>

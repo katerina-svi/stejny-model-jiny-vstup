@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Co se mění</title>
+<meta name="description" content="Prototyp: jedno místo pro změny v plánu divadla. Smyšlená data, nic se neukládá.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#F7F3EE; --surface:#FFFFFF; --surface-2:#F0EAE2; --line:#E4DCD1; --line-strong:#CFC5B8;
+  --ink:#1E1A1D; --ink-2:#564F54; --ink-3:#857D82;
+  --accent:#8B1E3F; --accent-hover:#741733; --accent-ink:#FFFFFF; --accent-soft:#F7E6EC;
+  --ok:#1D7348; --ok-ink:#FFFFFF; --ok-soft:#E2F2E9;
+  --warn:#9A5400; --warn-soft:#FCEFD8;
+  --danger:#B42318; --danger-soft:#FCE7E4;
+  --blue:#24558C; --blue-soft:#E4EDF8;
+  --violet:#5E3F98; --violet-soft:#EEE8F8;
+  --teal:#0E6B63; --teal-soft:#DCF1EE;
+  --signal:#1FA463;
+  --radius:16px; --radius-sm:10px;
+  --shadow:0 1px 2px rgba(30,26,29,.05),0 6px 20px rgba(30,26,29,.06);
+  --av-l:90%; --av-tl:28%; --av-s:55%;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141113; --surface:#1E1A1D; --surface-2:#292427; --line:#352F33; --line-strong:#4A4247;
+    --ink:#F4EFF1; --ink-2:#C6BDC2; --ink-3:#958C91;
+    --accent:#E7718F; --accent-hover:#F08AA4; --accent-ink:#1C0D13; --accent-soft:#3B1E29;
+    --ok:#5BC48E; --ok-ink:#0B2216; --ok-soft:#163223;
+    --warn:#F2B661; --warn-soft:#382811;
+    --danger:#F28B80; --danger-soft:#3C1C19;
+    --blue:#8DB6E8; --blue-soft:#1A2838;
+    --violet:#B9A2EC; --violet-soft:#2A2140;
+    --teal:#6CD3C6; --teal-soft:#132E2B;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.25);
+    --av-l:26%; --av-tl:86%; --av-s:30%;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141113; --surface:#1E1A1D; --surface-2:#292427; --line:#352F33; --line-strong:#4A4247;
+  --ink:#F4EFF1; --ink-2:#C6BDC2; --ink-3:#958C91;
+  --accent:#E7718F; --accent-hover:#F08AA4; --accent-ink:#1C0D13; --accent-soft:#3B1E29;
+  --ok:#5BC48E; --ok-ink:#0B2216; --ok-soft:#163223;
+  --warn:#F2B661; --warn-soft:#382811;
+  --danger:#F28B80; --danger-soft:#3C1C19;
+  --blue:#8DB6E8; --blue-soft:#1A2838;
+  --violet:#B9A2EC; --violet-soft:#2A2140;
+  --teal:#6CD3C6; --teal-soft:#132E2B;
+  --av-l:26%; --av-tl:86%; --av-s:30%;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "DM Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;line-height:1.2;letter-spacing:-.01em}
+p{margin:0}
+button{font:inherit;color:inherit}
+svg{flex:none}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+.muted{color:var(--ink-3)}
+.small{font-size:14px}
+.center{text-align:center}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* ---------- header ---------- */
+header.top{position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0}
+.app-name{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:22px;line-height:1.1}
+.app-sub{font-size:13px;color:var(--ink-3)}
+.signal-bar{display:block;width:100%;border:0;border-bottom:1px solid color-mix(in srgb,var(--signal) 22%,transparent);background:var(--ok-soft);color:var(--ok);font-size:13px;padding:6px 0;cursor:pointer;text-align:left}
+.signal-inner{display:flex;align-items:center;gap:8px}
+.signal-more{margin-left:auto;text-decoration:underline;text-underline-offset:3px;font-weight:600}
+.signal-bar:hover .signal-more{text-decoration-thickness:2px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--signal);box-shadow:0 0 0 3px color-mix(in srgb,var(--signal) 25%,transparent)}
+.who{display:flex;align-items:center;gap:8px;flex:0 1 auto}
+.who-label{font-size:13px;color:var(--ink-3)}
+.who select{font:inherit;font-size:14px;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 30px 6px 12px;min-height:36px;max-width:260px;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;cursor:pointer}
+
+.tabs-inner{display:flex;gap:4px}
+.tab{position:relative;display:inline-flex;align-items:center;gap:8px;border:0;background:none;padding:10px 14px 12px;font-weight:600;font-size:15px;color:var(--ink-2);cursor:pointer;border-radius:10px 10px 0 0}
+.tab:hover{color:var(--ink)}
+.tab[aria-current="page"]{color:var(--accent)}
+.tab[aria-current="page"]::after{content:"";position:absolute;left:10px;right:10px;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:var(--accent)}
+.badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:12px;font-weight:700}
+.badge:empty{display:none}
+
+main{padding-top:28px;padding-bottom:56px}
+footer{padding:0 16px 32px;text-align:center;font-size:13px;color:var(--ink-3)}
+
+@media (max-width:640px){
+  .who{order:3;flex:1 1 100%}
+  .who select{flex:1;max-width:none}
+  .signal-more{display:none}
+  .app-name{font-size:20px}
+  nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+  .tabs-inner{display:grid;grid-template-columns:repeat(3,1fr);gap:0;padding:0}
+  .tab{flex-direction:column;gap:2px;font-size:12px;padding:8px 4px 10px;border-radius:0;text-align:center;line-height:1.2}
+  .tab[aria-current="page"]::after{top:0;bottom:auto;left:22%;right:22%;border-radius:0 0 3px 3px}
+  .tab .badge{position:absolute;top:4px;left:calc(50% + 8px)}
+  main{padding-top:18px;padding-bottom:110px}
+  footer{padding-bottom:100px}
+}
+
+/* ---------- common blocks ---------- */
+.view-head{margin-bottom:18px}
+.view-head h2{font-family:Fraunces,Georgia,serif;font-size:30px;font-weight:700;margin-bottom:6px}
+.lead{color:var(--ink-2);font-size:16px;max-width:62ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card + .card{margin-top:14px}
+.card h3{font-size:19px;font-weight:700;margin:10px 0 4px}
+.card-top{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.01em}
+.t-cas{background:var(--blue-soft);color:var(--blue)}
+.t-misto{background:var(--violet-soft);color:var(--violet)}
+.t-zruseno{background:var(--danger-soft);color:var(--danger)}
+.t-nove{background:var(--teal-soft);color:var(--teal)}
+.t-jine{background:var(--surface-2);color:var(--ink-2)}
+.u-now{background:var(--danger);color:#fff}
+.u-soon{background:var(--warn-soft);color:var(--warn)}
+.u-later{background:var(--surface-2);color:var(--ink-2)}
+.u-past{background:var(--surface-2);color:var(--ink-3)}
+.new-pill{background:var(--accent-soft);color:var(--accent)}
+.when{display:flex;align-items:center;gap:6px;color:var(--ink-2);font-weight:500}
+.diff{margin:14px 0 0;display:grid;gap:6px;background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px}
+.diff div{display:grid;grid-template-columns:76px 1fr;gap:10px;align-items:baseline}
+.diff dt{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3)}
+.diff dd{margin:0;overflow-wrap:anywhere}
+.diff .old{color:var(--ink-3);text-decoration:line-through;text-decoration-thickness:1.5px}
+.diff .new{font-weight:700;color:var(--ink)}
+.diff .cancel{color:var(--danger)}
+.note{margin-top:12px;color:var(--ink-2);padding-left:12px;border-left:3px solid var(--line-strong)}
+.meta{margin-top:12px;font-size:14px;color:var(--ink-3)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.change.is-pending{box-shadow:inset 4px 0 0 var(--accent),var(--shadow)}
+.change.leaving{transition:opacity .22s ease,transform .22s ease;opacity:0;transform:translateY(-6px)}
+.confirmed-line{display:flex;align-items:center;gap:6px;color:var(--ok);font-weight:600}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:10px 16px;border-radius:12px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font-weight:600;cursor:pointer;text-decoration:none;line-height:1.2}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);border-color:transparent;color:var(--accent-ink)}
+.btn.primary:hover{background:var(--accent-hover)}
+.btn.ok{background:var(--ok);border-color:transparent;color:var(--ok-ink)}
+.btn.ok:hover{filter:brightness(1.07)}
+.btn.ghost{border-color:transparent;background:transparent;padding-left:8px;padding-right:8px;color:var(--ink-2)}
+.btn.ghost:hover{background:var(--surface-2);color:var(--ink)}
+.btn.big{width:100%;min-height:54px;font-size:17px;border-radius:14px}
+.btn[disabled]{opacity:.55;cursor:not-allowed;filter:none}
+.link{border:0;background:none;padding:0;color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+
+.status-line{display:flex;align-items:center;gap:10px;font-weight:600;margin:0 0 12px}
+.count-pill{display:inline-grid;place-items:center;min-width:28px;height:28px;padding:0 8px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700}
+.empty{text-align:center;padding:30px 18px}
+.empty h3{margin-top:12px}
+.empty p{color:var(--ink-2);margin-top:4px}
+.empty .actions{justify-content:center}
+.big-ico{display:inline-grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--ok-soft);color:var(--ok)}
+.big-ico.neutral{background:var(--surface-2);color:var(--ink-3)}
+.hint{margin-top:18px;font-size:14px;color:var(--ink-2)}
+
+details.done-wrap{margin-top:22px}
+details.done-wrap > summary{cursor:pointer;font-weight:700;color:var(--ink-2);padding:8px 0;list-style:none;display:flex;align-items:center;gap:8px}
+details.done-wrap > summary::-webkit-details-marker{display:none}
+details.done-wrap > summary::before{content:"";width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s}
+details.done-wrap[open] > summary::before{transform:rotate(45deg)}
+details.done-wrap .card{box-shadow:none}
+details.others{margin-top:10px;font-size:14px}
+details.others > summary{cursor:pointer;color:var(--ink-2);font-weight:600}
+.mini-people{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.mini-people li{display:inline-flex;align-items:center;gap:6px;background:var(--surface-2);border-radius:999px;padding:3px 10px 3px 3px;font-size:13px}
+.okmark{color:var(--ok);display:inline-flex}
+
+/* avatars */
+.av{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:50%;background:hsl(var(--h) var(--av-s) var(--av-l));color:hsl(var(--h) 45% var(--av-tl));font-weight:700;font-size:13px;flex:none;letter-spacing:.02em}
+.av.sm{width:26px;height:26px;font-size:10.5px}
+.av.lg{width:46px;height:46px;font-size:15px}
+.stack{display:inline-flex;align-items:center}
+.stack .av{border:2px solid var(--surface);margin-left:-8px}
+.stack .av:first-child{margin-left:0}
+
+/* ---------- kdo už to viděl ---------- */
+.toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:14px}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:12px;padding:4px;gap:2px}
+.seg button{border:0;background:none;padding:8px 14px;border-radius:9px;font-weight:600;font-size:14px;color:var(--ink-2);cursor:pointer;min-height:38px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.stat b{display:block;font-size:26px;line-height:1.1;font-family:Fraunces,Georgia,serif}
+.stat span{font-size:13px;color:var(--ink-3)}
+.stat.alert b{color:var(--accent)}
+.progress{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden;margin-top:14px}
+.progress span{display:block;height:100%;border-radius:999px;background:var(--ok);transition:width .5s ease}
+.progress-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;margin-top:8px;font-size:14px}
+.seen.is-complete .progress-row strong{color:var(--ok)}
+.warn{display:flex;gap:8px;align-items:flex-start;margin-top:12px;background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 12px;font-weight:600;font-size:14px}
+.miss-strip{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--ink-2)}
+.seen-body{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+.seen-body h4{font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin:4px 0 8px}
+.seen-body h4 + ul{margin-bottom:16px}
+.people-list{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.prow{display:flex;align-items:center;gap:12px;padding:8px 6px;border-radius:10px}
+.prow:hover{background:var(--surface-2)}
+.pn{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.pn small{color:var(--ink-3);font-size:13px}
+.pst{font-size:13.5px;text-align:right;line-height:1.3}
+.pst.ok{color:var(--ok);font-weight:600}
+.pst.wait{color:var(--ink-3)}
+.pst small{display:block;color:var(--ink-3);font-weight:400}
+.reminded{font-size:13.5px;color:var(--ink-3)}
+.flash{animation:flash 1.6s ease}
+@keyframes flash{0%,40%{box-shadow:0 0 0 4px var(--accent-soft),var(--shadow)}100%{box-shadow:var(--shadow)}}
+@media (max-width:520px){
+  .stats{grid-template-columns:repeat(3,1fr);gap:6px}
+  .stat{padding:10px}
+  .stat b{font-size:22px}
+  .stat span{font-size:12px}
+  .pst small{display:none}
+}
+
+/* ---------- formulář ---------- */
+.form{padding:22px}
+.step{display:flex;align-items:center;gap:10px;margin:28px 0 12px}
+.step:first-child{margin-top:0}
+.step h3{margin:0;font-size:18px}
+.num{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--bg);font-weight:700;font-size:14px}
+.field{margin-bottom:14px}
+.field label,.flabel{display:block;font-weight:600;font-size:14.5px;margin-bottom:6px}
+.opt{font-weight:400;color:var(--ink-3);font-size:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.grid2{grid-template-columns:1fr;gap:0}}
+input[type=text],input[type=date],input[type=time],textarea{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:10px 12px;min-height:46px}
+textarea{resize:vertical;min-height:64px}
+input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+input[aria-invalid=true],textarea[aria-invalid=true]{border-color:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
+.err{color:var(--danger);font-size:13.5px;font-weight:600;margin-top:5px}
+.err:empty{display:none}
+.tchips{display:flex;flex-wrap:wrap;gap:8px}
+.tchip{position:relative;cursor:pointer}
+.tchip input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.tchip span{display:inline-flex;align-items:center;min-height:42px;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line-strong);background:var(--surface);font-weight:600;font-size:14.5px;color:var(--ink-2)}
+.tchip input:checked + span{border-color:currentColor}
+.tchip.t-cas input:checked + span{background:var(--blue-soft);color:var(--blue)}
+.tchip.t-misto input:checked + span{background:var(--violet-soft);color:var(--violet)}
+.tchip.t-zruseno input:checked + span{background:var(--danger-soft);color:var(--danger)}
+.tchip.t-nove input:checked + span{background:var(--teal-soft);color:var(--teal)}
+.tchip.t-jine input:checked + span{background:var(--surface-2);color:var(--ink)}
+.tchip input:focus-visible + span{outline:3px solid var(--accent);outline-offset:2px}
+.tchip{background:none !important}
+.type-hint{font-size:13.5px;color:var(--ink-3);margin-top:8px}
+.pgroup{margin-bottom:14px}
+.pgroup-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.pgroup-head span{font-weight:700;font-size:14px;color:var(--ink-2)}
+.chip{border:1px solid var(--line-strong);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink-2);min-height:32px}
+.chip:hover{background:var(--surface-2)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.pick{position:relative;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;background:var(--surface);min-height:54px}
+.pick:hover{border-color:var(--line-strong)}
+.pick input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.pick.on{border-color:var(--accent);background:var(--accent-soft)}
+.pick input:focus-visible ~ .pick-txt{outline:3px solid var(--accent);outline-offset:2px;border-radius:4px}
+.pick-txt{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.25}
+.pick-txt strong{font-size:14.5px}
+.pick-txt small{color:var(--ink-3);font-size:12.5px}
+.pick-check{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line-strong);display:grid;place-items:center;color:transparent;flex:none}
+.pick.on .pick-check{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.sel-count{margin:6px 0 0;font-size:15px;color:var(--ink-2)}
+.preview-wrap{border:2px dashed var(--line-strong);border-radius:calc(var(--radius) + 6px);padding:10px}
+.preview-wrap .card{box-shadow:none}
+.preview-label{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);margin:2px 6px 10px}
+.submit-zone{margin-top:22px}
+.submit-zone p{margin-top:10px}
+
+/* ---------- success ---------- */
+.success{text-align:center;padding:28px 20px}
+.success h2{font-family:Fraunces,Georgia,serif;font-size:28px;margin:14px 0 8px}
+.success .lead{margin:0 auto}
+.success .stack{margin-top:16px}
+.success .stack .av{width:40px;height:40px}
+.success .progress{max-width:360px;margin:18px auto 0}
+.success .progress-row{justify-content:center}
+.success .actions{justify-content:center;margin-top:20px}
+.tip{margin:14px 0;background:var(--blue-soft);color:var(--blue);border-radius:12px;padding:12px 14px;font-size:14.5px}
+
+/* ---------- start ---------- */
+.start{position:fixed;inset:0;z-index:100;background:var(--bg);overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:32px 16px}
+.start[hidden]{display:none}
+.start-card{width:100%;max-width:560px;margin:auto 0}
+.eyebrow{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.start h1{font-family:Fraunces,Georgia,serif;font-size:44px;margin:6px 0 10px}
+.start .lead{font-size:17px}
+.start h2{font-size:17px;margin:28px 0 12px}
+.role{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:1.5px solid var(--line);background:var(--surface);border-radius:16px;padding:14px 16px;cursor:pointer;box-shadow:var(--shadow)}
+.role + .role{margin-top:10px}
+.role:hover{border-color:var(--accent)}
+.role-txt{flex:1;display:flex;flex-direction:column;line-height:1.3}
+.role-txt strong{font-size:16.5px}
+.role-txt span{color:var(--ink-2);font-size:14.5px}
+.role-txt em{font-style:normal;color:var(--ink-3);font-size:13px}
+.arrow{color:var(--ink-3)}
+.start-other{margin-top:16px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:14.5px;color:var(--ink-2)}
+.start-other select{font:inherit;font-size:14.5px;color:var(--ink);background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;padding:8px 10px;min-height:42px;flex:1;min-width:200px}
+.start-note{margin-top:28px;display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.start-note .dot{margin-top:5px;flex:none}
+
+/* ---------- dialog ---------- */
+dialog{border:0;border-radius:20px;padding:0;max-width:540px;width:calc(100% - 32px);background:var(--surface);color:var(--ink);box-shadow:0 20px 60px rgba(0,0,0,.3)}
+dialog::backdrop{background:rgba(20,15,18,.5)}
+.dlg{padding:24px}
+.dlg-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.dlg-head h2{font-family:Fraunces,Georgia,serif;font-size:24px}
+.dot.big{width:16px;height:16px}
+.dlg h3{font-size:15px;margin:18px 0 6px}
+.dlg p,.dlg li{color:var(--ink-2);font-size:15px}
+.dlg ul{margin:0;padding-left:20px}
+.dlg .research{margin-top:8px;font-size:14px;color:var(--ink-3)}
+.switch{display:flex;gap:10px;align-items:flex-start;margin-top:18px;font-size:14.5px;color:var(--ink-2);cursor:pointer}
+.switch input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent)}
+.dlg-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;flex-wrap:wrap}
+
+/* ---------- toasts ---------- */
+#toasts{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;z-index:200;display:flex;flex-direction:column;gap:8px;width:min(480px,calc(100% - 32px));pointer-events:none}
+.toast{pointer-events:auto;display:flex;align-items:center;gap:12px;background:var(--ink);color:var(--bg);padding:12px 14px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.25);font-size:14.5px;animation:tin .2s ease}
+.toast span{flex:1}
+.toast-act{border:0;background:none;color:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px}
+.toast.out{opacity:0;transform:translateY(6px);transition:all .25s ease}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (max-width:640px){#toasts{bottom:86px}}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+#main:focus,#main:focus-visible{outline:none}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <button class="signal-bar" id="semaforBtn" type="button" aria-haspopup="dialog"><span class="wrap signal-inner"><span class="dot" aria-hidden="true"></span><span><strong>Zelený semafor:</strong> smyšlená data, nic se neukládá</span><span class="signal-more">O prototypu</span></span></button>
+  <div class="wrap top-row">
+    <div class="brand">
+      <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><rect width="36" height="36" rx="10" fill="var(--accent)"/><path d="M7 9h22" stroke="var(--accent-ink)" stroke-width="2.4" stroke-linecap="round"/><path d="M9 9c0 8 2.5 14.5 7 19M27 9c0 8-2.5 14.5-7 19" stroke="var(--accent-ink)" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>
+      <div>
+        <div class="app-name">Co se mění</div>
+        <div class="app-sub">změny v plánu divadla na jednom místě</div>
+      </div>
+    </div>
+    <div class="who">
+      <span id="meAv"></span>
+      <label for="meSelect" class="who-label">Jste</label>
+      <select id="meSelect"></select>
+    </div>
+  </div>
+  <nav class="tabs" aria-label="Hlavní navigace">
+    <div class="wrap tabs-inner">
+      <button class="tab" type="button" data-view="zapsat"><span>Zapsat změnu</span></button>
+      <button class="tab" type="button" data-view="moje"><span>Moje změny</span><span class="badge" id="badge" aria-label="nepotvrzené změny"></span></button>
+      <button class="tab" type="button" data-view="kdo"><span>Kdo už to viděl</span></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main" class="wrap" tabindex="-1"></main>
+
+<footer>Prototyp k testování konceptu · smyšlená data · nic se neukládá ani neodesílá</footer>
+
+<div class="start" id="start">
+  <div class="start-card">
+    <p class="eyebrow">Prototyp pro zaměstnance divadla</p>
+    <h1>Co se mění</h1>
+    <p class="lead">Jedno místo pro změny v&nbsp;plánu. Změnu zapíše jeden člověk, všichni, koho se týká, ji dostanou ve stejnou chvíli a&nbsp;potvrdí, že o&nbsp;ní vědí.</p>
+    <h2>Za koho si to chcete vyzkoušet?</h2>
+    <button class="role" type="button" data-start="petra">
+      <span class="av lg" style="--h:338">PH</span>
+      <span class="role-txt"><strong>Petra Holá</strong><em>plánování provozu</em><span>Zapisuje změny a&nbsp;hlídá, kdo je už viděl.</span></span>
+      <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <button class="role" type="button" data-start="tomas">
+      <span class="av lg" style="--h:205">TŘ</span>
+      <span class="role-txt"><strong>Tomáš Řezníček</strong><em>mistr osvětlení</em><span>Změny dostává a&nbsp;potvrzuje, že o&nbsp;nich ví.</span></span>
+      <svg class="arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <div class="start-other">
+      <label for="startOther">Nebo kdokoli jiný z&nbsp;divadla:</label>
+      <select id="startOther"><option value="">Vyberte osobu…</option></select>
+    </div>
+    <p class="start-note"><span class="dot" aria-hidden="true"></span><span><strong>Zelený semafor.</strong> Všechna jména, inscenace a&nbsp;časy jsou smyšlené. Nic se neukládá ani neodesílá, po obnovení stránky začínáte znovu.</span></p>
+  </div>
+</div>
+
+<dialog id="info" aria-labelledby="info-h">
+  <div class="dlg">
+    <div class="dlg-head"><span class="dot big" aria-hidden="true"></span><h2 id="info-h">Zelený semafor</h2></div>
+    <p>Tohle je prototyp na vyzkoušení konceptu. Všechna jména, inscenace a&nbsp;časy jsou smyšlené. Nic se neukládá ani neodesílá: po obnovení stránky se vše vrátí na začátek.</p>
+    <h3>Co zkoušíme</h3>
+    <p>Jak bychom mohli zařídit, aby se o&nbsp;změně v&nbsp;plánu dozvěděli všichni, koho se týká, včas a&nbsp;z&nbsp;jednoho místa?</p>
+    <p class="research">Z&nbsp;výzkumu: plánovací systém zmínilo 11&nbsp;ze&nbsp;17 lidí v&nbsp;rozhovorech. O&nbsp;změně se jedni dozví den předem, druzí až v&nbsp;ten den a&nbsp;data jdou ze šesti nepropojených zdrojů.</p>
+    <h3>Co v&nbsp;prototypu záměrně není</h3>
+    <ul>
+      <li>žádná AI,</li>
+      <li>žádný nový plánovací systém,</li>
+      <li>žádné napojení na data.</li>
+    </ul>
+    <label class="switch"><input type="checkbox" id="simToggle" checked> <span>Po zapsání změny simulovat, že ji ostatní postupně potvrzují (pro ukázku obrazovky Kdo už to viděl).</span></label>
+    <div class="dlg-actions">
+      <button class="btn" type="button" id="resetBtn">Začít znovu</button>
+      <button class="btn primary" type="button" id="closeInfo">Zavřít</button>
+    </div>
+  </div>
+</dialog>
+
+<div id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<noscript><p style="padding:16px">Prototyp potřebuje zapnutý JavaScript.</p></noscript>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= pomocné ================= */
+const M = 60000, H = 60 * M, DAY = 24 * H, NB = ' ';
+const WD = ['ne', 'po', 'út', 'st', 'čt', 'pá', 'so'];
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const pad = n => String(n).padStart(2, '0');
+const pl = (n, one, few, many) => n === 1 ? one : (n >= 2 && n <= 4 ? few : many);
+const lide = n => n + NB + pl(n, 'člověk', 'lidé', 'lidí');
+const zze = n => ([2,3,4,6,7,12,13,14,16,17].includes(n) || (n >= 20 && n < 30)) ? 'ze' : 'z';
+const fv = (p, m, f) => p.g === 'f' ? f : m;
+const first = p => p.name.split(' ')[0];
+
+function isoDate(d){ return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function addDays(n){ const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() + n); return d; }
+function parseDate(iso){ const [y,m,d] = iso.split('-').map(Number); return new Date(y, m - 1, d); }
+function dayLabel(d){ return WD[d.getDay()] + NB + d.getDate() + '.' + NB + (d.getMonth() + 1) + '.'; }
+function dayDiff(d){ const t = new Date(); t.setHours(0,0,0,0); const x = new Date(d); x.setHours(0,0,0,0); return Math.round((x - t) / DAY); }
+function vTime(hhmm){
+  if (!hhmm) return '';
+  const h = parseInt(hhmm, 10);
+  const ve = [2,3,4,12,13,14,20,21,22,23].includes(h);
+  return (ve ? 've' : 'v') + NB + String(hhmm).replace(/^0(\d)/, '$1');
+}
+function relWord(diff){ return diff === 0 ? 'dnes' : diff === 1 ? 'zítra' : diff === 2 ? 'pozítří' : diff === -1 ? 'včera' : null; }
+function fmtEvent(c){
+  if (!c.date) return 'datum doplňte';
+  const d = parseDate(c.date); const rel = relWord(dayDiff(d));
+  return (rel ? rel + ', ' : '') + dayLabel(d) + (c.time ? ' ' + vTime(c.time) : '');
+}
+function fmtStamp(ts){
+  const d = new Date(ts); const diff = dayDiff(d);
+  const day = diff === 0 ? 'dnes' : diff === -1 ? 'včera' : dayLabel(d);
+  return day + ' ' + vTime(d.getHours() + ':' + pad(d.getMinutes()));
+}
+function fmtDelay(ms){
+  const m = Math.round(ms / M);
+  if (m < 1) return 'do minuty po zápisu';
+  if (m < 60) return m + NB + 'min po zápisu';
+  const h = Math.round(m / 60);
+  if (h < 24) return h + NB + 'h po zápisu';
+  const d = Math.round(h / 24);
+  return d + NB + pl(d, 'den', 'dny', 'dní') + ' po zápisu';
+}
+function eventTs(c){
+  const d = parseDate(c.date);
+  if (c.time){ const [h, m] = c.time.split(':').map(Number); d.setHours(h, m || 0); }
+  return d.getTime();
+}
+function fixNbsp(root){
+  if (!root) return;
+  const re = /(^|[\s („])([kKsSvVzZoOuUaAiI]) /g;
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, { acceptNode: n => {
+    const p = n.parentNode && n.parentNode.nodeName;
+    return (p === 'SCRIPT' || p === 'STYLE' || p === 'TEXTAREA' || p === 'OPTION') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+  }});
+  let n;
+  while ((n = w.nextNode())){
+    const v = n.nodeValue.replace(re, '$1$2' + NB).replace(re, '$1$2' + NB);
+    if (v !== n.nodeValue) n.nodeValue = v;
+  }
+}
+
+/* ================= ikony ================= */
+const svg = (d, s = 18, sw = 2) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const ICON = {
+  check: svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 18, 2.6),
+  checkSm: svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 14, 3),
+  checkBig: svg('<path d="M5 12.5l4.5 4.5L19 7.5"/>', 28, 2.6),
+  cal: svg('<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>', 17),
+  pen: svg('<path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/>', 20),
+  inbox: svg('<path d="M4 13l2.5-7.5h11L20 13v5.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5V13z"/><path d="M4 13h4.5l1.5 2.5h4l1.5-2.5H20"/>', 20),
+  eye: svg('<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>', 20),
+  bell: svg('<path d="M6 16v-5a6 6 0 1 1 12 0v5l1.5 2h-15L6 16z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>', 17),
+  alert: svg('<path d="M12 3.5l9.5 16.5h-19L12 3.5z"/><path d="M12 10v4.5M12 17.2v.3"/>', 18),
+  send: svg('<path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/>', 20),
+  clock: svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', 40, 1.6),
+  list: svg('<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>', 28, 2),
+};
+
+/* ================= smyšlená data ================= */
+const PEOPLE = [
+  { id:'petra',  name:'Petra Holá',           role:'plánování provozu',  group:'provoz',   g:'f', h:338 },
+  { id:'zuzana', name:'Zuzana Kratochvílová', role:'produkce',           group:'provoz',   g:'f', h:28 },
+  { id:'ondrej', name:'Ondřej Pokorný',       role:'inspicient',         group:'provoz',   g:'m', h:262 },
+  { id:'radek',  name:'Radek Novotný',        role:'vedoucí uvaděčů',    group:'provoz',   g:'m', h:96 },
+  { id:'tomas',  name:'Tomáš Řezníček',       role:'mistr osvětlení',    group:'technika', g:'m', h:205 },
+  { id:'lenka',  name:'Lenka Vávrová',        role:'zvukařka',           group:'technika', g:'f', h:170 },
+  { id:'jakub',  name:'Jakub Mareš',          role:'jevištní technik',   group:'technika', g:'m', h:226 },
+  { id:'eva',    name:'Eva Šimková',          role:'rekvizitářka',       group:'vyprava',  g:'f', h:48 },
+  { id:'hana',   name:'Hana Kubíčková',       role:'garderobiérka',      group:'vyprava',  g:'f', h:300 },
+  { id:'marie',  name:'Marie Doležalová',     role:'maskérka',           group:'vyprava',  g:'f', h:12 },
+  { id:'klara',  name:'Klára Benešová',       role:'herečka',            group:'soubor',   g:'f', h:318 },
+  { id:'martin', name:'Martin Sýkora',        role:'herec',              group:'soubor',   g:'m', h:140 },
+  { id:'adam',   name:'Adam Vlček',           role:'herec',              group:'soubor',   g:'m', h:188 },
+];
+const P = Object.fromEntries(PEOPLE.map(p => [p.id, p]));
+const ORDER = Object.fromEntries(PEOPLE.map((p, i) => [p.id, i]));
+const GROUPS = [
+  { id:'technika', label:'Technika' },
+  { id:'vyprava',  label:'Výprava a šatny' },
+  { id:'soubor',   label:'Umělecký soubor' },
+  { id:'provoz',   label:'Provoz a produkce' },
+];
+const TYPES = {
+  cas:     { label:'Čas',       hint:'Akce se posouvá na jiný čas nebo den.' },
+  misto:   { label:'Místo',     hint:'Akce bude jinde než v plánu.' },
+  zruseno: { label:'Zrušeno',   hint:'Akce se nekoná.' },
+  nove:    { label:'Nová akce', hint:'Do plánu přibývá něco, co v něm nebylo.' },
+  jine:    { label:'Jiné',      hint:'Obsazení, technika, cokoli dalšího.' },
+};
+const AKCE = ['Zkouška: Racek','Představení: Racek','Představení: Maryša','Technická zkouška: Sněhová královna','Kostýmová zkouška: Sněhová královna','Zkouška světel','Zvuková zkouška','Porada techniky','Čtená zkouška: Lucerna'];
+
+function seedChanges(){
+  const now = Date.now();
+  const mk = o => {
+    const w = now - o.ago; const confirmed = {};
+    Object.entries(o.conf || {}).forEach(([id, min]) => { const ts = w + min * M; if (ts < now - M) confirmed[id] = ts; });
+    return { id:o.id, type:o.type, title:o.title, date:isoDate(addDays(o.day)), time:o.time, before:o.before, after:o.after, note:o.note,
+      author:o.author, writtenAt:w, affected:o.affected.slice().sort((a,b) => ORDER[a] - ORDER[b]), confirmed, reminded:null };
+  };
+  const d2 = dayLabel(addDays(2)), d3 = dayLabel(addDays(3));
+  return [
+    mk({ id:'c1', type:'misto', title:'Zkouška: Racek', day:1, time:'10:00',
+      before:'Velká scéna', after:'Zkušebna 2 (3. patro)',
+      note:'Na velké scéně se pokládá nová podlaha. Na zkoušku stačí základní sada rekvizit.',
+      author:'petra', ago:5 * H, affected:['klara','martin','adam','ondrej','eva','zuzana','jakub'],
+      conf:{ ondrej:7, zuzana:25, klara:50, eva:117 } }),
+    mk({ id:'c2', type:'cas', title:'Představení: Maryša', day:3, time:'19:30',
+      before:'Začátek 19:00', after:'Začátek 19:30, soubor přichází v 18:00',
+      note:'Posun kvůli pozdějšímu příjezdu zájezdové skupiny. Sál se otevírá v 19:00.',
+      author:'petra', ago:140 * M, affected:['tomas','lenka','jakub','hana','marie','ondrej','klara','martin','radek'],
+      conf:{ ondrej:3, radek:18, lenka:50, hana:82 } }),
+    mk({ id:'c3', type:'zruseno', title:'Technická zkouška: Sněhová královna', day:2, time:'14:00',
+      before:'14:00–18:00, velká scéna', after:'náhradní termín zapíšu, jakmile ho budu znát',
+      note:'Dodavatel nestihl dovézt díly scény.',
+      author:'petra', ago:26 * H, affected:['tomas','lenka','jakub','ondrej','zuzana'],
+      conf:{ ondrej:5, lenka:20, jakub:35, zuzana:62 } }),
+    mk({ id:'c4', type:'nove', title:'Zkouška světel: Racek', day:4, time:'09:00',
+      before:'', after:'9:00–12:00, velká scéna, bez herců',
+      note:'Doplněno kvůli nové světelné partituře ve 2. jednání.',
+      author:'petra', ago:35 * M, affected:['tomas','jakub','ondrej'],
+      conf:{ ondrej:4 } }),
+    mk({ id:'c5', type:'cas', title:'Kostýmová zkouška: Sněhová královna', day:2, time:'13:00',
+      before:d3 + ' v 9:00, šatna B', after:d2 + ' ve 13:00, šatna B',
+      note:'V pátek dopoledne je šatna B potřeba na focení.',
+      author:'zuzana', ago:3 * H, affected:['hana','marie','klara','martin','adam'],
+      conf:{ hana:10, marie:12, adam:45 } }),
+    mk({ id:'c6', type:'misto', title:'Porada techniky', day:1, time:'15:00',
+      before:'Dílny, 1. patro', after:'Malá zkušebna',
+      note:'V dílnách se lakuje, nedá se tam sedět.',
+      author:'petra', ago:2 * DAY + 2 * H, affected:['tomas','lenka','jakub'],
+      conf:{ tomas:25, lenka:50, jakub:130 } }),
+  ];
+}
+
+/* ================= stav ================= */
+let state, timers = [];
+function blankForm(){ return { type:'cas', title:'', date:isoDate(addDays(1)), time:'10:00', before:'', after:'', note:'', affected:[], tried:false }; }
+function initialState(){
+  return { me:null, view:'moje', kdoScope:null, changes:seedChanges(), simulate:true, form:blankForm(),
+    created:null, expanded:new Set(), doneOpen:null, focusId:null };
+}
+const find = id => state.changes.find(c => c.id === id);
+const missing = c => c.affected.filter(id => !c.confirmed[id]);
+const groupIds = g => PEOPLE.filter(p => p.group === g && p.id !== state.me).map(p => p.id);
+
+/* ================= stavební kousky ================= */
+function avatar(id, cls = ''){
+  const p = P[id];
+  const ini = p.name.split(' ').map(s => s[0]).slice(0, 2).join('');
+  return `<span class="av ${cls}" style="--h:${p.h}" title="${esc(p.name)}" aria-hidden="true">${ini}</span>`;
+}
+function typePill(c){ return `<span class="pill t-${c.type}">${TYPES[c.type].label}</span>`; }
+function urgency(c){
+  if (!c.date) return null;
+  const diff = dayDiff(parseDate(c.date));
+  if (diff < 0) return { cls:'u-past', label:'Proběhlo' };
+  if (diff === 0) return { cls:'u-now', label:'Dnes' };
+  if (diff === 1) return { cls:'u-soon', label:'Zítra' };
+  if (diff === 2) return { cls:'u-soon', label:'Pozítří' };
+  return { cls:'u-later', label:'Za' + NB + diff + NB + pl(diff, 'den', 'dny', 'dní') };
+}
+function urgPill(c){ const u = urgency(c); return u ? `<span class="pill ${u.cls}">${u.label}</span>` : ''; }
+function diffBlock(c){
+  if (c.type === 'nove'){
+    return `<dl class="diff"><div><dt>Nově</dt><dd class="new">${esc(c.after) || '<span class="muted">doplňte, kdy a kde</span>'}</dd></div></dl>`;
+  }
+  const after = c.type === 'zruseno'
+    ? `<span class="cancel">Zrušeno</span>${c.after ? '<span style="font-weight:500">, ' + esc(c.after) + '</span>' : ''}`
+    : (esc(c.after) || '<span class="muted" style="font-weight:400">doplňte, co platí nově</span>');
+  return `<dl class="diff">
+    <div><dt>Původně</dt><dd class="old">${esc(c.before) || '<span class="muted" style="text-decoration:none">doplňte</span>'}</dd></div>
+    <div><dt>Nově</dt><dd class="new">${after}</dd></div>
+  </dl>`;
+}
+
+function changeCard(c, mode){
+  const me = P[state.me], a = P[c.author];
+  const conf = c.confirmed[me.id];
+  const others = c.affected.filter(id => id !== me.id);
+  const isNew = mode === 'pending' && (Date.now() - c.writtenAt) < 60 * M;
+  let actions = '';
+  if (mode === 'pending'){
+    actions = `<button class="btn ok" type="button" data-confirm="${c.id}">${ICON.check} ${fv(me, 'Viděl', 'Viděla')} jsem, beru na vědomí</button>`;
+  } else if (mode === 'done'){
+    actions = `<p class="confirmed-line">${ICON.check} ${fv(me, 'Potvrdil', 'Potvrdila')} jste ${fmtStamp(conf)}</p>`;
+  }
+  const othersHtml = others.length ? `<details class="others"><summary>Kdo další to dostal (${others.length})</summary>
+      <ul class="mini-people">${others.map(id => `<li>${avatar(id, 'sm')}${esc(P[id].name)}${c.confirmed[id] ? `<span class="okmark" title="potvrzeno">${ICON.checkSm}</span>` : ''}</li>`).join('')}</ul>
+    </details>` : '';
+  return `<article class="card change ${mode === 'pending' ? 'is-pending' : ''}" id="ch-${c.id}">
+    <div class="card-top">${typePill(c)}${urgPill(c)}${isNew ? '<span class="pill new-pill">Nové</span>' : ''}</div>
+    <h3>${esc(c.title)}</h3>
+    <p class="when">${ICON.cal}<span>${fmtEvent(c)}</span></p>
+    ${diffBlock(c)}
+    ${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}
+    <p class="meta">${fv(a, 'Zapsal', 'Zapsala')} ${esc(a.name)} ${fmtStamp(c.writtenAt)}. Přišla najednou všem, koho se týká (${c.affected.length}).</p>
+    ${othersHtml}
+    ${actions ? `<div class="actions">${actions}</div>` : ''}
+  </article>`;
+}
+
+/* ================= obrazovka: Moje změny ================= */
+function viewMoje(){
+  const me = P[state.me];
+  const mine = state.changes.filter(c => c.affected.includes(me.id));
+  const pending = mine.filter(c => !c.confirmed[me.id]).sort((a, b) => eventTs(a) - eventTs(b));
+  const done = mine.filter(c => c.confirmed[me.id]).sort((a, b) => eventTs(a) - eventTs(b));
+  const authored = state.changes.filter(c => c.author === me.id).length;
+
+  let h = `<section class="view-head"><h2>Moje změny</h2>
+    <p class="lead">Všechny změny v plánu, které se vás týkají. Dostáváte je ve stejnou chvíli jako všichni ostatní, nikdo je nemá dřív.</p></section>`;
+
+  if (pending.length){
+    const n = pending.length;
+    h += `<p class="status-line"><span class="count-pill">${n}</span>${pl(n, 'změna čeká', 'změny čekají', 'změn čeká')} na vaše potvrzení</p>`;
+    h += pending.map(c => changeCard(c, 'pending')).join('');
+  } else {
+    h += `<div class="card empty"><span class="big-ico">${ICON.checkBig}</span>
+      <h3>Máte přehled</h3>
+      <p>${mine.length ? 'Všechny změny, které se vás týkají, máte potvrzené.' : 'Zatím se vás netýká žádná změna v plánu.'}</p></div>`;
+  }
+  if (done.length){
+    const open = state.doneOpen === true || (state.doneOpen === null && !pending.length);
+    h += `<details class="done-wrap" ${open ? 'open' : ''}><summary>Potvrzené (${done.length})</summary>${done.map(c => changeCard(c, 'done')).join('')}</details>`;
+  }
+  if (authored){
+    h += `<p class="hint">Změny, které jste ${fv(me, 'zapsal', 'zapsala')} vy, sledujete v záložce <button class="link" type="button" data-go="kdo">Kdo už to viděl</button>.</p>`;
+  }
+  return h;
+}
+
+/* ================= obrazovka: Kdo už to viděl ================= */
+function personRow(id, c){
+  const p = P[id], ts = c.confirmed[id];
+  const st = ts
+    ? `<span class="pst ok">${fv(p, 'potvrdil', 'potvrdila')} ${fmtStamp(ts)}<small>${fmtDelay(ts - c.writtenAt)}</small></span>`
+    : `<span class="pst wait">zatím ${fv(p, 'nepotvrdil', 'nepotvrdila')}</span>`;
+  return `<li class="prow">${avatar(id)}<span class="pn"><strong>${esc(p.name)}</strong><small>${esc(p.role)}</small></span>${st}</li>`;
+}
+function kdoCard(c){
+  const me = P[state.me], a = P[c.author];
+  const miss = missing(c);
+  const ok = c.affected.filter(id => c.confirmed[id]).sort((x, y) => c.confirmed[x] - c.confirmed[y]);
+  const n = c.affected.length, k = ok.length, pct = n ? Math.round(k / n * 100) : 0;
+  const open = state.expanded.has(c.id);
+  const diff = c.date ? dayDiff(parseDate(c.date)) : 99;
+
+  let warn = '';
+  if (miss.length && diff >= 0 && diff <= 1){
+    const when = diff === 0 ? 'dnes' : 'zítra';
+    const who = miss.length === 1
+      ? `${esc(P[miss[0]].name)} to ještě ${fv(P[miss[0]], 'nepotvrdil', 'nepotvrdila')}`
+      : (miss.length < 5 ? `${miss.length} lidé to ještě nepotvrdili` : `${miss.length} lidí to ještě nepotvrdilo`);
+    warn = `<p class="warn">${ICON.alert}<span>Akce je ${when} a ${who}.</span></p>`;
+  }
+  const authorTxt = c.author === me.id ? 'zapsáno' : `${fv(a, 'zapsal', 'zapsala')} ${esc(a.name)}`;
+  const status = k === n ? (n === 1 ? 'Potvrzeno' : `Všichni potvrdili (${n})`) : `Potvrzeno ${k}${NB}${zze(n)}${NB}${n}`;
+
+  const strip = (!open && miss.length) ? `<div class="miss-strip"><span>Chybí:</span>
+      <span class="stack">${miss.slice(0, 6).map(id => avatar(id, 'sm')).join('')}</span>
+      <span>${miss.map(id => esc(first(P[id]))).join(', ')}</span></div>` : '';
+
+  const remindBtn = miss.length
+    ? `<button class="btn" type="button" data-remind="${c.id}">${ICON.bell} Připomenout ${miss.length === 1 ? fv(P[miss[0]], 'mu', 'jí') : 'jim'}${miss.length > 1 ? ' (' + miss.length + ')' : ''}</button>` : '';
+
+  const body = open ? `<div class="seen-body">
+      ${miss.length ? `<h4>Ještě nepotvrdili (${miss.length})</h4><ul class="people-list">${miss.map(id => personRow(id, c)).join('')}</ul>` : ''}
+      ${ok.length ? `<h4>Potvrdili (${ok.length})</h4><ul class="people-list">${ok.map(id => personRow(id, c)).join('')}</ul>` : ''}
+    </div>` : '';
+
+  return `<article class="card seen ${miss.length ? '' : 'is-complete'}" id="kdo-${c.id}">
+    <div class="card-top">${typePill(c)}${urgPill(c)}</div>
+    <h3>${esc(c.title)}</h3>
+    <p class="when">${ICON.cal}<span>${fmtEvent(c)}</span></p>
+    <div class="progress" role="progressbar" aria-label="Potvrzeno" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${k}"><span style="width:${pct}%"></span></div>
+    <div class="progress-row"><strong>${status}</strong><span class="muted">${authorTxt} ${fmtStamp(c.writtenAt)}</span></div>
+    ${warn}
+    ${strip}
+    <div class="actions">
+      <button class="btn ghost" type="button" data-toggle="${c.id}" aria-expanded="${open}">${open ? 'Skrýt seznam' : 'Ukázat, kdo ano a kdo ne'}</button>
+      ${remindBtn}
+      ${c.reminded ? `<span class="reminded">Připomenuto ${fmtStamp(c.reminded)}</span>` : ''}
+    </div>
+    ${body}
+  </article>`;
+}
+function viewKdo(){
+  const me = P[state.me];
+  const authored = state.changes.filter(c => c.author === me.id);
+  const scope = state.kdoScope || (authored.length ? 'mine' : 'all');
+  const list = (scope === 'mine' ? authored : state.changes).slice().sort((a, b) => {
+    const ca = missing(a).length === 0, cb = missing(b).length === 0;
+    if (ca !== cb) return ca ? 1 : -1;
+    return eventTs(a) - eventTs(b);
+  });
+  const miss = list.reduce((s, c) => s + missing(c).length, 0);
+  const full = list.filter(c => !missing(c).length).length;
+
+  let h = `<section class="view-head"><h2>Kdo už to viděl</h2>
+    <p class="lead">U každé změny vidíte, kdo ji potvrdil a komu ji ještě připomenout. Nikdo nemusí obvolávat ani dohledávat.</p></section>
+    <div class="toolbar">
+      <div class="seg" role="group" aria-label="Které změny zobrazit">
+        <button type="button" data-scope="mine" aria-pressed="${scope === 'mine'}">Moje zápisy</button>
+        <button type="button" data-scope="all" aria-pressed="${scope === 'all'}">Všechny změny</button>
+      </div>
+    </div>`;
+
+  if (!list.length){
+    h += `<div class="card empty"><span class="big-ico neutral">${ICON.list}</span>
+      <h3>Zatím jste ${fv(me, 'nezapsal', 'nezapsala')} žádnou změnu</h3>
+      <p>Až nějakou zapíšete, uvidíte tady, kdo ji už potvrdil.</p>
+      <div class="actions"><button class="btn primary" type="button" data-go="zapsat">Zapsat změnu</button><button class="btn" type="button" data-scope="all">Ukázat všechny změny</button></div></div>`;
+    return h;
+  }
+  h += `<div class="stats">
+      <div class="stat"><b>${list.length}</b><span>${pl(list.length, 'změna', 'změny', 'změn')}</span></div>
+      <div class="stat"><b>${full}</b><span>potvrzeno všemi</span></div>
+      <div class="stat ${miss ? 'alert' : ''}"><b>${miss}</b><span>${pl(miss, 'chybějící potvrzení', 'chybějící potvrzení', 'chybějících potvrzení')}</span></div>
+    </div>`;
+  h += list.map(kdoCard).join('');
+  return h;
+}
+
+/* ================= obrazovka: Zapsat změnu ================= */
+function fieldDefs(type){
+  const d = {
+    cas:     { before:{ label:'Původně', ph:'např. začátek 19:00' }, after:{ label:'Nově', ph:'např. začátek 19:30' }, date:'Datum (po změně)', time:'Čas začátku (po změně)' },
+    misto:   { before:{ label:'Původně', ph:'např. velká scéna' }, after:{ label:'Nově', ph:'např. zkušebna 2, 3. patro' }, date:'Datum akce', time:'Čas začátku' },
+    zruseno: { before:{ label:'Co se ruší', ph:'např. 14:00–18:00, velká scéna' }, after:{ label:'Co s tím dál', ph:'např. náhradní termín zapíšu příští týden', opt:true }, date:'Datum akce', time:'Čas začátku' },
+    nove:    { before:null, after:{ label:'Kdy a kde', ph:'např. 9:00–12:00, velká scéna, bez herců' }, date:'Datum akce', time:'Čas začátku' },
+    jine:    { before:{ label:'Původně', ph:'co platilo', opt:true }, after:{ label:'Nově', ph:'co platí teď' }, date:'Datum akce', time:'Čas začátku' },
+  };
+  return d[type];
+}
+function validate(f){
+  const e = {};
+  if (!f.title.trim()) e.title = 'Napište, o jakou akci jde.';
+  if (!f.date) e.date = 'Vyberte datum.';
+  if (f.type !== 'zruseno' && !f.after.trim()) e.after = f.type === 'nove' ? 'Napište, kdy a kde akce bude.' : 'Napište, co platí nově.';
+  if ((f.type === 'cas' || f.type === 'misto' || f.type === 'zruseno') && !f.before.trim()) e.before = 'Napište, co platilo dosud.';
+  if (!f.affected.length) e.affected = 'Vyberte aspoň jednoho člověka, kterého se změna týká.';
+  return e;
+}
+function viewForm(){
+  const f = state.form, me = P[state.me], fd = fieldDefs(f.type);
+  const typeChips = Object.entries(TYPES).map(([k, t]) =>
+    `<label class="tchip t-${k}"><input type="radio" name="type" value="${k}" ${f.type === k ? 'checked' : ''}><span>${t.label}</span></label>`).join('');
+  const fieldHtml = (name, def) => `<div class="field">
+      <label for="f-${name}">${def.label}${def.opt ? ' <span class="opt">nepovinné</span>' : ''}</label>
+      <input type="text" id="f-${name}" name="${name}" value="${esc(f[name])}" placeholder="${esc(def.ph)}" autocomplete="off">
+      <p class="err" data-err="${name}"></p></div>`;
+  const groups = GROUPS.map(g => {
+    const people = PEOPLE.filter(p => p.group === g.id && p.id !== me.id);
+    if (!people.length) return '';
+    return `<div class="pgroup">
+      <div class="pgroup-head"><span>${g.label}</span><button type="button" class="chip" data-group="${g.id}" aria-pressed="false">Vybrat celý úsek</button></div>
+      <div class="pgrid">${people.map(p => `<label class="pick ${f.affected.includes(p.id) ? 'on' : ''}">
+          <input type="checkbox" name="person" value="${p.id}" ${f.affected.includes(p.id) ? 'checked' : ''}>
+          ${avatar(p.id)}<span class="pick-txt"><strong>${esc(p.name)}</strong><small>${esc(p.role)}</small></span>
+          <span class="pick-check" aria-hidden="true">${ICON.checkSm}</span></label>`).join('')}</div>
+    </div>`;
+  }).join('');
+
+  return `<section class="view-head"><h2>Zapsat změnu</h2>
+    <p class="lead">Zapíšete jednou, na jednom místě. Všichni, koho se to týká, ji uvidí ve stejnou chvíli a potvrdí, že o ní vědí.</p></section>
+  <form id="changeForm" class="card form" novalidate>
+    <div class="step"><span class="num">1</span><h3>Co se mění</h3></div>
+    <div class="field">
+      <span class="flabel" id="lbl-type">Typ změny</span>
+      <div class="tchips" role="radiogroup" aria-labelledby="lbl-type">${typeChips}</div>
+      <p class="type-hint">${TYPES[f.type].hint}</p>
+    </div>
+    <div class="field">
+      <label for="f-title">Akce v plánu</label>
+      <input type="text" id="f-title" name="title" list="akce-list" value="${esc(f.title)}" placeholder="např. Zkouška: Racek" autocomplete="off">
+      <datalist id="akce-list">${AKCE.map(a => `<option value="${esc(a)}"></option>`).join('')}</datalist>
+      <p class="err" data-err="title"></p>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="f-date">${fd.date}</label><input type="date" id="f-date" name="date" value="${esc(f.date)}"><p class="err" data-err="date"></p></div>
+      <div class="field"><label for="f-time">${fd.time} <span class="opt">nepovinné</span></label><input type="time" id="f-time" name="time" value="${esc(f.time)}"></div>
+    </div>
+    <div class="${fd.before ? 'grid2' : ''}">
+      ${fd.before ? fieldHtml('before', fd.before) : ''}
+      ${fieldHtml('after', fd.after)}
+    </div>
+    <div class="field">
+      <label for="f-note">Poznámka <span class="opt">nepovinné</span></label>
+      <textarea id="f-note" name="note" rows="2" placeholder="Proč se to mění, co si vzít s sebou, na co nezapomenout">${esc(f.note)}</textarea>
+    </div>
+
+    <div class="step"><span class="num">2</span><h3>Koho se to týká</h3></div>
+    <p class="muted small" style="margin:-4px 0 14px">Vyberte celé úseky nebo jednotlivé lidi. Vy jako ${fv(me, 'autor', 'autorka')} změnu znáte, proto v seznamu nejste.</p>
+    ${groups}
+    <p class="sel-count" id="selCount" aria-live="polite"></p>
+    <p class="err" data-err="affected"></p>
+
+    <div class="step"><span class="num">3</span><h3>Takhle to uvidí</h3></div>
+    <div class="preview-wrap"><p class="preview-label">Náhled v Moje změny u každého vybraného</p><div id="preview"></div></div>
+
+    <div class="submit-zone">
+      <button type="submit" class="btn primary big">${ICON.send} Zapsat a dát vědět všem najednou</button>
+      <p class="muted small center">V prototypu se nic neodesílá ani neukládá.</p>
+    </div>
+  </form>`;
+}
+function previewCard(){
+  const f = state.form, me = P[state.me];
+  const c = { type:f.type, title:f.title.trim() || 'Název akce', date:f.date, time:f.time, before:f.before.trim(), after:f.after.trim(), note:f.note.trim() };
+  const n = f.affected.length;
+  return `<article class="card change is-pending">
+    <div class="card-top">${typePill(c)}${urgPill(c)}<span class="pill new-pill">Nové</span></div>
+    <h3>${esc(c.title)}</h3>
+    <p class="when">${ICON.cal}<span>${fmtEvent(c)}</span></p>
+    ${diffBlock(c)}
+    ${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}
+    <p class="meta">${fv(me, 'Zapsal', 'Zapsala')} ${esc(me.name)} právě teď. ${n ? `Přijde najednou všem, koho se týká (${n}).` : 'Zatím nikdo není vybraný.'}</p>
+    <div class="actions"><button class="btn ok" type="button" disabled tabindex="-1">${ICON.check} Viděl/a jsem, beru na vědomí</button></div>
+  </article>`;
+}
+function updateFormLive(){
+  const f = state.form;
+  $$('.pick input').forEach(i => i.closest('.pick').classList.toggle('on', i.checked));
+  GROUPS.forEach(g => {
+    const btn = $(`[data-group="${g.id}"]`); if (!btn) return;
+    const ids = groupIds(g.id);
+    const all = ids.length > 0 && ids.every(id => f.affected.includes(id));
+    btn.setAttribute('aria-pressed', String(all));
+    btn.textContent = all ? 'Zrušit výběr' : 'Vybrat celý úsek';
+  });
+  const sc = $('#selCount');
+  if (sc) sc.innerHTML = f.affected.length ? `Vybráno: <strong>${lide(f.affected.length)}</strong>` : 'Zatím nikdo není vybraný.';
+  const pv = $('#preview');
+  if (pv){ pv.innerHTML = previewCard(); fixNbsp(pv); }
+  const errs = f.tried ? validate(f) : {};
+  $$('[data-err]').forEach(el => {
+    const k = el.dataset.err; el.textContent = errs[k] || '';
+    const inp = $(`#changeForm [name="${k}"]`);
+    if (inp && inp.type !== 'checkbox') inp.setAttribute('aria-invalid', errs[k] ? 'true' : 'false');
+  });
+}
+function viewCreated(){
+  const c = find(state.created); if (!c) return viewForm();
+  const n = c.affected.length, k = c.affected.filter(id => c.confirmed[id]).length;
+  const whoSees = n === 1 ? `ji vidí ${esc(P[c.affected[0]].name)}` : `ji vidí ${lide(n)} najednou`;
+  return `<section class="card success">
+      <span class="big-ico">${ICON.checkBig}</span>
+      <h2>Změna je venku</h2>
+      <p class="lead">Od ${fmtStamp(c.writtenAt)} ${whoSees}. Nikdo se ji nedozví dřív ani později než ostatní.</p>
+      <div class="stack">${c.affected.map(id => avatar(id)).join('')}</div>
+      <div class="progress" role="progressbar" aria-label="Potvrzeno" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${k}"><span style="width:${n ? Math.round(k / n * 100) : 0}%"></span></div>
+      <div class="progress-row"><strong>Potvrzeno ${k}${NB}${zze(n)}${NB}${n}</strong></div>
+      <div class="actions">
+        <button class="btn primary" type="button" data-go="kdo" data-focus="${c.id}">${ICON.eye} Sledovat, kdo už to viděl</button>
+        <button class="btn" type="button" data-new="1">Zapsat další změnu</button>
+      </div>
+    </section>
+    <p class="tip"><strong>Tip pro testování:</strong> přepněte se nahoře na někoho z vybraných lidí a otevřete Moje změny. Změna tam už čeká.</p>
+    ${changeCardPublic(c)}`;
+}
+function changeCardPublic(c){
+  // karta tak, jak ji vidí příjemce (bez akcí)
+  const a = P[c.author];
+  return `<article class="card change">
+    <div class="card-top">${typePill(c)}${urgPill(c)}</div>
+    <h3>${esc(c.title)}</h3>
+    <p class="when">${ICON.cal}<span>${fmtEvent(c)}</span></p>
+    ${diffBlock(c)}
+    ${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}
+    <p class="meta">${fv(a, 'Zapsal', 'Zapsala')} ${esc(a.name)} ${fmtStamp(c.writtenAt)}. Přišla najednou všem, koho se týká (${c.affected.length}).</p>
+  </article>`;
+}
+
+/* ================= render ================= */
+const main = $('#main');
+function renderHeader(){
+  const me = state.me ? P[state.me] : null;
+  if (me){
+    $('#meSelect').value = me.id;
+    $('#meAv').innerHTML = avatar(me.id, 'sm');
+    const n = state.changes.filter(c => c.affected.includes(me.id) && !c.confirmed[me.id]).length;
+    $('#badge').textContent = n ? String(n) : '';
+  }
+  $$('.tab').forEach(t => t.toggleAttribute('aria-current', false));
+  const cur = $(`.tab[data-view="${state.view}"]`); if (cur) cur.setAttribute('aria-current', 'page');
+}
+function render(){
+  renderHeader();
+  if (!state.me) return;
+  if (state.view === 'zapsat') main.innerHTML = state.created ? viewCreated() : viewForm();
+  else if (state.view === 'moje') main.innerHTML = viewMoje();
+  else main.innerHTML = viewKdo();
+  fixNbsp(main);
+  if (state.view === 'zapsat' && !state.created) updateFormLive();
+  if (state.focusId){
+    const el = document.getElementById('kdo-' + state.focusId);
+    state.focusId = null;
+    if (el){ el.scrollIntoView({ block:'center', behavior:'smooth' }); el.classList.add('flash'); }
+  }
+}
+function refresh(){
+  if (state.view === 'zapsat' && !state.created){ renderHeader(); return; }
+  const y = window.scrollY; render(); window.scrollTo(0, y);
+}
+
+/* ================= toasty ================= */
+function toast(html, opt = {}){
+  const el = document.createElement('div');
+  el.className = 'toast'; el.innerHTML = `<span>${html}</span>`;
+  if (opt.action){
+    const b = document.createElement('button');
+    b.className = 'toast-act'; b.type = 'button'; b.textContent = opt.action;
+    b.addEventListener('click', () => { opt.fn(); el.remove(); });
+    el.appendChild(b);
+  }
+  $('#toasts').appendChild(el); fixNbsp(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, opt.action ? 6500 : 4200);
+}
+
+/* ================= akce ================= */
+function go(view, focusId){
+  state.view = view;
+  if (view !== 'zapsat' && state.created && view !== 'kdo') { /* ponecháme potvrzení zápisu */ }
+  if (focusId){ const c = find(focusId); if (c && c.author === state.me) state.kdoScope = 'mine'; state.expanded.add(focusId); state.focusId = focusId; }
+  render();
+  if (!focusId) window.scrollTo(0, 0);
+}
+function startAs(id){
+  if (!P[id]) return;
+  state.me = id;
+  state.view = id === 'petra' ? 'zapsat' : 'moje';
+  $('#start').hidden = true;
+  render(); window.scrollTo(0, 0);
+  main.focus({ preventScroll:true });
+}
+function switchMe(id){
+  state.me = id;
+  state.form.affected = state.form.affected.filter(x => x !== id);
+  state.kdoScope = null; state.created = null; state.doneOpen = null;
+  render(); window.scrollTo(0, 0);
+  toast(`Teď jste ${esc(P[id].name)} (${esc(P[id].role)}).`);
+}
+function confirmChange(id){
+  const c = find(id); if (!c) return;
+  const meId = state.me, a = P[c.author];
+  const card = document.getElementById('ch-' + id);
+  const doIt = () => {
+    c.confirmed[meId] = Date.now();
+    refresh();
+    toast(`Potvrzeno. ${esc(a.name)} uvidí, že o změně víte.`, { action:'Zpět', fn:() => { delete c.confirmed[meId]; refresh(); } });
+  };
+  if (card && !matchMedia('(prefers-reduced-motion: reduce)').matches){ card.classList.add('leaving'); setTimeout(doIt, 220); }
+  else doIt();
+}
+function remind(id){
+  const c = find(id); if (!c) return;
+  const miss = missing(c); if (!miss.length) return;
+  c.reminded = Date.now();
+  refresh();
+  const who = miss.length === 1 ? ': ' + esc(P[miss[0]].name) : ` všem, kdo to ještě nepotvrdili (${miss.length})`;
+  toast(`Připomínka by teď odešla${who}. V prototypu se nic neodesílá.`);
+}
+function toggleGroup(g){
+  const ids = groupIds(g); const f = state.form;
+  const all = ids.every(id => f.affected.includes(id));
+  f.affected = all ? f.affected.filter(id => !ids.includes(id)) : Array.from(new Set(f.affected.concat(ids)));
+  f.affected.sort((a, b) => ORDER[a] - ORDER[b]);
+  $$('.pick input').forEach(i => { i.checked = f.affected.includes(i.value); });
+  updateFormLive();
+}
+function submitForm(){
+  const f = state.form; f.tried = true;
+  const errs = validate(f);
+  if (Object.keys(errs).length){
+    updateFormLive();
+    const firstKey = ['title','date','before','after','affected'].find(k => errs[k]);
+    const el = firstKey === 'affected' ? $('.pick input') : $(`#changeForm [name="${firstKey}"]`);
+    if (el){ el.focus({ preventScroll:true }); el.scrollIntoView({ block:'center', behavior:'smooth' }); }
+    toast('Ještě něco chybí, je to označené červeně.');
+    return;
+  }
+  const c = {
+    id:'n' + Date.now(), type:f.type, title:f.title.trim(), date:f.date, time:f.time,
+    before:f.type === 'nove' ? '' : f.before.trim(), after:f.after.trim(), note:f.note.trim(),
+    author:state.me, writtenAt:Date.now(), affected:f.affected.slice().sort((a, b) => ORDER[a] - ORDER[b]),
+    confirmed:{}, reminded:null,
+  };
+  state.changes.unshift(c);
+  state.created = c.id;
+  state.form = blankForm();
+  render(); window.scrollTo(0, 0);
+  simulate(c);
+}
+function simulate(c){
+  if (!state.simulate) return;
+  const pool = c.affected.filter(id => id !== state.me).sort(() => Math.random() - .5);
+  const count = Math.min(2, Math.max(0, pool.length - 1));
+  pool.slice(0, count).forEach((id, i) => {
+    const t = setTimeout(() => {
+      // simulace běží jen, dokud se díváte očima autora; po přepnutí na příjemce na vás změna čeká nepotvrzená
+      if (!state.simulate || state.me !== c.author || !state.changes.includes(c) || c.confirmed[id]) return;
+      c.confirmed[id] = Date.now();
+      if (state.me === c.author){ const p = P[id]; toast(`${esc(p.name)} ${fv(p, 'potvrdil', 'potvrdila')} změnu „${esc(c.title)}“.`); }
+      refresh();
+    }, 6000 + i * 8000 + Math.random() * 3000);
+    timers.push(t);
+  });
+}
+function reset(){
+  timers.forEach(clearTimeout); timers = [];
+  state = initialState();
+  $('#simToggle').checked = true;
+  $('#startOther').value = '';
+  main.innerHTML = '';
+  $('#badge').textContent = '';
+  $('#start').hidden = false;
+  window.scrollTo(0, 0);
+}
+
+/* ================= události ================= */
+document.addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  const d = b.dataset;
+  if (d.view){ if (state.view === 'zapsat' && d.view === 'zapsat' && state.created){ state.created = null; } go(d.view); }
+  else if (d.go){ go(d.go, d.focus); }
+  else if (d.confirm){ confirmChange(d.confirm); }
+  else if (d.toggle){
+    state.expanded.has(d.toggle) ? state.expanded.delete(d.toggle) : state.expanded.add(d.toggle);
+    refresh();
+    const nb = $(`[data-toggle="${d.toggle}"]`); if (nb) nb.focus({ preventScroll:true });
+  }
+  else if (d.remind){ remind(d.remind); }
+  else if (d.group){ toggleGroup(d.group); }
+  else if (d.scope){ state.kdoScope = d.scope; refresh(); }
+  else if (d.new){ state.created = null; state.form = blankForm(); render(); window.scrollTo(0, 0); }
+  else if (d.start){ startAs(d.start); }
+});
+main.addEventListener('input', e => {
+  const t = e.target; if (!t.closest('#changeForm')) return;
+  if (['title','date','time','before','after','note'].includes(t.name)){ state.form[t.name] = t.value; updateFormLive(); }
+});
+main.addEventListener('change', e => {
+  const t = e.target; if (!t.closest('#changeForm')) return;
+  if (t.name === 'type'){
+    state.form.type = t.value;
+    if (t.value === 'nove') state.form.before = '';
+    render();
+    const r = $(`#changeForm input[name="type"][value="${t.value}"]`); if (r) r.focus({ preventScroll:true });
+  } else if (t.name === 'person'){
+    const f = state.form;
+    f.affected = t.checked ? Array.from(new Set(f.affected.concat(t.value))) : f.affected.filter(id => id !== t.value);
+    f.affected.sort((a, b) => ORDER[a] - ORDER[b]);
+    updateFormLive();
+  }
+});
+main.addEventListener('submit', e => { if (e.target.id === 'changeForm'){ e.preventDefault(); submitForm(); } });
+main.addEventListener('toggle', e => { if (e.target.classList && e.target.classList.contains('done-wrap')) state.doneOpen = e.target.open; }, true);
+
+$('#meSelect').addEventListener('change', e => switchMe(e.target.value));
+$('#startOther').addEventListener('change', e => { if (e.target.value) startAs(e.target.value); });
+
+const dlg = $('#info');
+$('#semaforBtn').addEventListener('click', () => { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); });
+$('#closeInfo').addEventListener('click', () => dlg.close ? dlg.close() : dlg.removeAttribute('open'));
+dlg.addEventListener('click', e => { if (e.target === dlg && dlg.close) dlg.close(); });
+$('#resetBtn').addEventListener('click', () => { if (dlg.close) dlg.close(); reset(); });
+$('#simToggle').addEventListener('change', e => { state.simulate = e.target.checked; });
+
+/* ================= start ================= */
+const opts = PEOPLE.map(p => `<option value="${p.id}">${esc(p.name)} · ${esc(p.role)}</option>`).join('');
+$('#meSelect').innerHTML = opts;
+$('#startOther').insertAdjacentHTML('beforeend', opts);
+$('.tab[data-view="zapsat"]').insertAdjacentHTML('afterbegin', ICON.pen);
+$('.tab[data-view="moje"]').insertAdjacentHTML('afterbegin', ICON.inbox);
+$('.tab[data-view="kdo"]').insertAdjacentHTML('afterbegin', ICON.eye);
+fixNbsp(document.body);
+state = initialState();
+renderHeader();
+})();
+</script>
+</body>
+</html>

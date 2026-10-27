@@ -1,0 +1,1659 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nápověda – AI v divadle</title>
+<meta name="description" content="Hotové prompty pro každé oddělení divadla, skládačka vlastních promptů, semafor bezpečného použití a deník zkoušek s AI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f5eee3; --bg-2:#efe4d2; --surface:#fffaf3; --surface-2:#f4eadb;
+  --ink:#2b1b20; --ink-2:#5c474b; --ink-3:#86716c;
+  --line:#e4d5bf; --line-2:#d2bea0;
+  --accent:#8e1b2c; --accent-2:#6e1322; --accent-soft:#f4dcdb; --on-accent:#fff8ef;
+  --gold:#9a6b14; --gold-soft:#f5e7c7;
+  --ok:#2c6e45; --ok-soft:#dcefe1; --warn:#9c5b08; --warn-soft:#f8e7c9; --stop:#b2261d; --stop-soft:#f9ddd8;
+  --mark:#f7e2a2;
+  --shadow:0 1px 2px rgba(60,30,20,.06),0 10px 28px rgba(60,30,20,.09);
+  --radius:14px;
+  --font-display:'Fraunces',Georgia,'Times New Roman',serif;
+  --font-body:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#130c0f; --bg-2:#1a1114; --surface:#1f1518; --surface-2:#291c20;
+    --ink:#f4e9dc; --ink-2:#cdbcb1; --ink-3:#9d8b84;
+    --line:#37282d; --line-2:#4a373d;
+    --accent:#e3586d; --accent-2:#f07b8d; --accent-soft:#3b1a21; --on-accent:#1a0b0f;
+    --gold:#e2b45c; --gold-soft:#33281a;
+    --ok:#6fc690; --ok-soft:#17301f; --warn:#eaa94c; --warn-soft:#352611; --stop:#f27469; --stop-soft:#3c1716;
+    --mark:#4d3d12;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#130c0f; --bg-2:#1a1114; --surface:#1f1518; --surface-2:#291c20;
+  --ink:#f4e9dc; --ink-2:#cdbcb1; --ink-3:#9d8b84;
+  --line:#37282d; --line-2:#4a373d;
+  --accent:#e3586d; --accent-2:#f07b8d; --accent-soft:#3b1a21; --on-accent:#1a0b0f;
+  --gold:#e2b45c; --gold-soft:#33281a;
+  --ok:#6fc690; --ok-soft:#17301f; --warn:#eaa94c; --warn-soft:#352611; --stop:#f27469; --stop-soft:#3c1716;
+  --mark:#4d3d12;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 30px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.55;
+  background:var(--bg);
+  background:radial-gradient(1100px 520px at 88% -8%,color-mix(in srgb,var(--gold) 13%,transparent),transparent 62%),var(--bg);
+  -webkit-font-smoothing:antialiased;min-height:100vh;
+}
+body.modal-open{overflow:hidden}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:600;line-height:1.15;margin:0;letter-spacing:-.01em}
+h1 em,h2 em{font-style:italic;color:var(--accent);font-weight:500}
+p{margin:0}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+.wrap{max-width:1140px;margin:0 auto;padding:0 16px}
+@media (min-width:720px){.wrap{padding:0 28px}}
+.ico{width:20px;height:20px;flex:none;display:inline-block;vertical-align:middle}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;font-weight:700;color:var(--gold)}
+.eyebrow .ico{width:15px;height:15px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mini{font-family:var(--font-body);font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--ink-3);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.mini .ico{width:16px;height:16px;color:var(--ok)}
+.hint{font-size:.83rem;color:var(--ink-3);margin-top:6px}
+
+/* Opona */
+.curtain{position:relative;height:12px;background:repeating-linear-gradient(90deg,var(--accent) 0 11px,var(--accent-2) 11px 17px,var(--accent) 17px 28px);box-shadow:inset 0 -2px 0 var(--gold)}
+.curtain::after{content:"";position:absolute;left:0;right:0;top:100%;height:9px;background:radial-gradient(ellipse 13px 9px at 13px 0,var(--accent-2) 97%,transparent 100%) 0 0/26px 9px repeat-x}
+
+/* Hlavička */
+.site{padding:26px 0 10px}
+.head-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
+.brand-mark{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--on-accent);box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--gold)}
+.brand-mark .ico{width:26px;height:26px}
+.brand strong{font-family:var(--font-display);font-size:1.6rem;display:block;line-height:1;font-weight:600}
+.brand small{display:block;color:var(--ink-3);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;font-weight:600}
+.icon-btn{border:1px solid var(--line);background:var(--surface);width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:var(--ink-2);flex:none;transition:background .15s,border-color .15s,color .15s}
+.icon-btn:hover{border-color:var(--line-2);color:var(--ink)}
+.icon-btn.sm{width:34px;height:34px}
+.icon-btn.sm .ico{width:17px;height:17px}
+
+/* Záložky */
+.tabs-bar{position:sticky;top:0;z-index:30;background:var(--bg);background:color-mix(in srgb,var(--bg) 90%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:14px 14px 12px;border-bottom:2px solid transparent;color:var(--ink-2);font-weight:600;font-size:.95rem;white-space:nowrap;display:flex;align-items:center;gap:8px;transition:color .15s,border-color .15s}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tcount{background:var(--accent);color:var(--on-accent);font-size:.7rem;border-radius:99px;padding:1px 7px;font-weight:700}
+.tcount:empty{display:none}
+
+/* Hero */
+.hero{display:grid;gap:22px;padding:34px 0 30px;grid-template-columns:1fr}
+@media (min-width:920px){.hero{grid-template-columns:1.65fr 1fr;align-items:end;gap:40px}}
+.hero h1{font-size:clamp(2rem,5.2vw,3.4rem);margin-top:10px}
+.hero .sub{color:var(--ink-2);font-size:1.08rem;max-width:60ch;margin-top:16px}
+.steps{display:flex;flex-wrap:wrap;gap:8px 20px;margin:20px 0 0;padding:0;list-style:none;color:var(--ink-2);font-size:.92rem}
+.steps li{display:flex;gap:8px;align-items:center}
+.steps b{width:24px;height:24px;border-radius:50%;background:var(--gold-soft);color:var(--gold);display:grid;place-items:center;font-size:.78rem}
+.challenge{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.challenge::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--gold),var(--accent))}
+.challenge h3{font-size:1.3rem;margin:10px 0 6px}
+.challenge p{color:var(--ink-2);font-size:.93rem}
+.ch-meta{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--ink-3);margin:10px 0 14px}
+.ch-meta .ico{width:16px;height:16px}
+
+/* Role */
+.label{font-size:1.25rem;margin:4px 0 12px}
+.roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px;margin:0 0 22px}
+@media (max-width:640px){
+  .roles{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:148px;overflow-x:auto;margin-left:-16px;margin-right:-16px;padding:2px 16px 8px;scroll-snap-type:x proximity;scrollbar-width:thin}
+  .role{scroll-snap-align:start}
+}
+.role{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);transition:border-color .15s,transform .15s,background .15s,box-shadow .15s;min-height:118px}
+.role:hover{border-color:var(--line-2);transform:translateY(-1px);box-shadow:var(--shadow)}
+.role.on{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.role-ico{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);margin-bottom:8px}
+.role.on .role-ico{background:color-mix(in srgb,var(--on-accent) 20%,transparent);color:var(--on-accent)}
+.role-name{font-weight:650;font-weight:600;font-size:.95rem;line-height:1.25}
+.role-sub{font-size:.78rem;color:var(--ink-3);line-height:1.35}
+.role.on .role-sub{color:inherit;opacity:.85}
+
+/* Lišta */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
+.search{flex:1 1 260px;display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:0 16px;color:var(--ink-3);transition:border-color .15s,box-shadow .15s}
+.search:focus-within{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search input{border:0;background:none;outline:none;padding:12px 0;width:100%;color:var(--ink);-webkit-appearance:none;appearance:none}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 16px;font-size:.9rem;font-weight:500;display:inline-flex;gap:6px;align-items:center;color:var(--ink-2)}
+.chip .ico{width:17px;height:17px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* Karty */
+.group{margin:0 0 30px}
+.group-head{display:flex;align-items:center;gap:10px;margin:0 0 14px;border-bottom:1px solid var(--line);padding-bottom:10px;flex-wrap:wrap}
+.group-head h2{font-size:1.4rem}
+.group-head .gh-sub{color:var(--ink-3);font-size:.85rem;margin-left:auto}
+.gh-ico{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.gh-ico .ico{width:18px;height:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,290px),1fr));gap:12px}
+.card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;display:flex;flex-direction:column;gap:8px;transition:border-color .15s,box-shadow .15s,transform .15s}
+.card:hover{border-color:var(--line-2);box-shadow:var(--shadow);transform:translateY(-2px)}
+.card-role{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em;font-weight:700}
+.card-role .ico{width:15px;height:15px}
+.card h3{font-size:1.14rem;padding-right:34px}
+.stretch{all:unset;cursor:pointer}
+.stretch::after{content:"";position:absolute;inset:0;border-radius:var(--radius)}
+.stretch:focus-visible{outline:none}
+.stretch:focus-visible::after{outline:2px solid var(--accent);outline-offset:2px}
+.card p{color:var(--ink-2);font-size:.92rem}
+.card-meta{margin-top:auto;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem;color:var(--ink-3);padding-top:6px}
+.badge{display:inline-flex;gap:4px;align-items:center;padding:2px 9px 2px 7px;border-radius:999px;font-weight:600;font-size:.76rem}
+.badge .ico{width:14px;height:14px}
+.badge.ok{background:var(--ok-soft);color:var(--ok)}
+.star{position:absolute;top:10px;right:10px;z-index:2;border:0;background:none;padding:7px;border-radius:50%;color:var(--ink-3);line-height:0;transition:color .15s,background .15s}
+.star:hover{color:var(--gold);background:var(--gold-soft)}
+.star.on{color:var(--gold)}
+.star.on .ico path,.btn.on .ico path{fill:currentColor}
+.empty{background:var(--surface);border:1px dashed var(--line-2);border-radius:var(--radius);padding:28px;text-align:center;color:var(--ink-2)}
+.empty h3{font-size:1.25rem;margin-bottom:6px;color:var(--ink)}
+.empty .row{justify-content:center;margin-top:14px}
+
+/* Tlačítka */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:999px;padding:11px 18px;font-weight:600;border:1px solid transparent;transition:background .15s,transform .1s,border-color .15s;font-size:.95rem;white-space:nowrap}
+.btn:active{transform:translateY(1px)}
+.btn .ico{width:18px;height:18px}
+.btn-primary{background:var(--accent);color:var(--on-accent)}
+.btn-primary:hover{background:var(--accent-2)}
+.btn-ghost{background:transparent;border-color:var(--line-2);color:var(--ink)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-ghost.on{color:var(--gold);border-color:var(--gold)}
+.btn-sm{padding:7px 13px;font-size:.86rem}
+.btn-danger{background:transparent;border-color:var(--line-2);color:var(--stop)}
+.btn-danger:hover{background:var(--stop-soft)}
+.link{all:unset;cursor:pointer;font-weight:600;color:var(--ink);text-decoration:underline;text-decoration-color:var(--line-2);text-underline-offset:3px}
+.link:hover{text-decoration-color:var(--accent)}
+.link:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* Dialog */
+dialog{border:0;padding:0;background:var(--surface);color:var(--ink);border-radius:20px;width:min(1000px,calc(100vw - 32px));max-width:none;max-height:calc(100vh - 48px);max-height:calc(100dvh - 48px);box-shadow:0 30px 80px rgba(0,0,0,.35);overflow:auto;overscroll-behavior:contain}
+dialog::backdrop{background:rgba(22,8,12,.58);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.dlg{display:flex;flex-direction:column;min-height:100%}
+.dlg-head{position:sticky;top:0;z-index:3;background:var(--surface);display:flex;justify-content:space-between;gap:14px;align-items:flex-start;padding:18px 22px 14px;border-bottom:1px solid var(--line)}
+.dlg-head h2{font-size:1.55rem;margin-top:6px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--accent)}
+.tag .ico{width:16px;height:16px}
+.dlg-body{padding:18px 22px 22px;flex:1}
+.lead{color:var(--ink-2);font-size:1.02rem;margin-bottom:18px;max-width:70ch}
+.detail-grid{display:grid;gap:22px;grid-template-columns:1fr}
+@media (min-width:880px){.detail-grid{grid-template-columns:1fr 1.08fr}.preview-col{position:sticky;top:92px;align-self:start}}
+.dlg-foot{position:sticky;bottom:0;z-index:3;background:var(--surface);border-top:1px solid var(--line);padding:12px 22px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.fill-status{font-size:.86rem;color:var(--ink-3);display:flex;align-items:center;gap:6px;flex:1 1 220px}
+.fill-status .ico{width:17px;height:17px;color:var(--ok)}
+@media (max-width:640px){
+  dialog{width:100%;height:100%;max-height:100%;margin:0;border-radius:0}
+  .dlg-head,.dlg-body,.dlg-foot{padding-left:16px;padding-right:16px}
+  .dlg-head h2{font-size:1.3rem}
+  .dlg-foot{gap:8px}
+  .fill-status{flex:1 1 100%;font-size:.8rem}
+  .dlg-foot .row{flex:1;flex-wrap:nowrap}
+  .dlg-foot .btn-primary{flex:1}
+  .dlg-foot .btn-ghost{padding:11px 13px}
+  .dlg-foot .btn-ghost .lbl{display:none}
+}
+
+/* Pole */
+.field{display:block;margin-bottom:14px}
+.flabel{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;font-weight:600;font-size:.9rem;margin-bottom:6px}
+.opt{font-weight:600;font-size:.68rem;color:var(--ink-3);text-transform:uppercase;letter-spacing:.07em;background:var(--surface-2);border-radius:99px;padding:1px 7px}
+.opt.mem{color:var(--gold);background:var(--gold-soft)}
+input[type=text],textarea,.save-row input{width:100%;border:1px solid var(--line-2);background:var(--bg);border-radius:10px;padding:10px 12px;line-height:1.45;transition:border-color .15s,box-shadow .15s;color:var(--ink)}
+input[type=text]:focus,textarea:focus,.save-row input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{resize:vertical;min-height:84px;display:block}
+::placeholder{color:var(--ink-3);opacity:.9}
+.preview{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;white-space:pre-wrap;word-wrap:break-word;font-size:.93rem;line-height:1.62;max-height:56vh;overflow:auto}
+.preview .filled{box-shadow:inset 0 -2px 0 var(--ok);font-weight:500}
+.preview mark.ph{background:var(--mark);color:var(--ink);border-radius:4px;padding:0 3px;font-weight:600}
+.preview .empty-pv{color:var(--ink-3);font-style:italic}
+
+/* Poznámky */
+.notes{display:grid;gap:12px;margin-top:20px}
+@media (min-width:700px){.notes.two{grid-template-columns:1fr 1fr}}
+.note{border-radius:12px;padding:14px 16px;font-size:.92rem;border:1px solid var(--line)}
+.note strong{display:flex;gap:6px;align-items:center;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.note strong .ico{width:16px;height:16px}
+.note.tip{background:var(--gold-soft);border-color:color-mix(in srgb,var(--gold) 28%,transparent)}
+.note.tip strong{color:var(--gold)}
+.note.watch{background:var(--stop-soft);border-color:color-mix(in srgb,var(--stop) 25%,transparent)}
+.note.watch strong{color:var(--stop)}
+
+/* Hodnocení */
+.rate{margin-top:20px;padding:16px;border:1px dashed var(--line-2);border-radius:14px}
+.rate.pulse{animation:pulse 1.2s ease 2}
+@keyframes pulse{0%,100%{border-color:var(--line-2)}50%{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}}
+.rate-btns{display:flex;flex-wrap:wrap;gap:8px}
+.rbtn{border:1px solid var(--line-2);background:var(--surface);border-radius:999px;padding:9px 16px;font-weight:600;font-size:.9rem;display:inline-flex;gap:8px;align-items:center}
+.rbtn::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--c)}
+.rbtn.ok{--c:var(--ok)} .rbtn.warn{--c:var(--warn)} .rbtn.stop{--c:var(--stop)}
+.rbtn:hover{border-color:var(--c);background:color-mix(in srgb,var(--c) 10%,var(--surface))}
+
+/* Panely */
+.panel-head{padding:34px 0 22px}
+.panel-head h1{font-size:clamp(1.9rem,4.4vw,2.8rem);margin-top:10px}
+.panel-head p{color:var(--ink-2);max-width:64ch;margin-top:12px;font-size:1.04rem}
+.section-title{font-size:1.5rem;margin:36px 0 14px}
+
+/* Skládačka */
+.builder{display:grid;gap:24px;align-items:start}
+@media (min-width:980px){.builder{grid-template-columns:1.1fr 1fr}.builder-out{position:sticky;top:72px}}
+.bsec{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.bsec-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.bsec-num{font-family:var(--font-display);font-style:italic;color:var(--accent);font-size:1.7rem;line-height:1;min-width:20px}
+.bsec h3{font-size:1.15rem}
+.bsec .q{color:var(--ink-3);font-size:.87rem;margin-top:2px}
+.bsec textarea{min-height:60px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chips button{border:1px dashed var(--line-2);background:transparent;border-radius:999px;padding:5px 11px;font-size:.82rem;color:var(--ink-2);text-align:left;transition:color .15s,border-color .15s,background .15s}
+.chips button:hover{border-style:solid;border-color:var(--accent);color:var(--accent)}
+.bopts{display:grid;gap:8px;margin:6px 0 14px;font-size:.93rem}
+.bopts label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.bopts input{width:18px;height:18px;margin-top:2px;accent-color:var(--accent);flex:none}
+.out-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.meter-row{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.meter{display:flex;gap:5px}
+.meter i{flex:1;height:7px;border-radius:9px;background:var(--line)}
+.meter.l1 i.on{background:var(--warn)} .meter.l2 i.on{background:var(--gold)} .meter.l3 i.on{background:var(--ok)}
+.meter-text{font-size:.88rem;color:var(--ink-2)}
+.meter-text b{color:var(--ink)}
+.out-card .preview{min-height:160px}
+.out-actions{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
+.b-rate{margin-top:12px}
+.b-rate:empty{display:none}
+.save-row{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.save-row input{border-radius:999px;padding:8px 14px;flex:1;min-width:0}
+.saved{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:6px}
+.saved li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 8px 8px 12px;border-radius:10px;background:var(--surface-2);font-size:.92rem}
+.saved li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.refine{margin-top:16px;padding:18px;border-radius:18px;border:1px solid var(--line);background:var(--bg-2)}
+.refine h3{font-size:1.15rem}
+.refine p{color:var(--ink-2);font-size:.9rem;margin-top:4px}
+.refine .chips button{border-style:solid;background:var(--surface)}
+
+/* Pravidla */
+.semafor{display:grid;gap:12px}
+@media (min-width:840px){.semafor{grid-template-columns:repeat(3,1fr)}}
+.light{border-radius:var(--radius);padding:18px;border:1px solid var(--line);background:var(--surface);border-top:5px solid var(--c)}
+.light.green{--c:var(--ok)} .light.amber{--c:var(--warn)} .light.red{--c:var(--stop)}
+.light-head{display:flex;gap:12px;align-items:center}
+.lamp{width:20px;height:20px;border-radius:50%;background:var(--c);box-shadow:0 0 0 5px color-mix(in srgb,var(--c) 20%,transparent),0 0 18px color-mix(in srgb,var(--c) 45%,transparent);flex:none}
+.light h3{font-size:1.2rem}
+.light small{display:block;color:var(--ink-3);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+.light ul{margin:14px 0 0;padding-left:18px;color:var(--ink-2);font-size:.93rem;display:grid;gap:6px}
+.info-box{margin-top:14px;display:grid;gap:14px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:var(--radius);padding:18px}
+@media (min-width:760px){.info-box{grid-template-columns:auto 1fr}}
+.info-box .ico{width:28px;height:28px;color:var(--gold)}
+.info-box h3{font-size:1.15rem;margin-bottom:4px}
+.info-box p{color:var(--ink-2);font-size:.95rem}
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+.quiz-top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.qprog{display:flex;gap:4px}
+.qprog i{width:22px;height:5px;border-radius:9px;background:var(--line)}
+.qprog i.done{background:var(--ink-3)} .qprog i.now{background:var(--accent)}
+.quiz h3{font-size:1.3rem;margin-bottom:16px;max-width:60ch}
+.q-opts{display:flex;flex-wrap:wrap;gap:10px}
+.q-opt{flex:1 1 150px;padding:14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);font-weight:600;display:flex;align-items:center;gap:10px;justify-content:center;transition:border-color .15s,background .15s}
+.q-opt:hover:not([disabled]){border-color:var(--c)}
+.q-opt[disabled]{cursor:default}
+.q-opt .dot{width:14px;height:14px;border-radius:50%;background:var(--c)}
+.q-opt.green{--c:var(--ok)} .q-opt.amber{--c:var(--warn)} .q-opt.red{--c:var(--stop)}
+.q-opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.q-opt.wrong{border-color:var(--stop);background:var(--stop-soft)}
+.q-opt.dim{opacity:.55}
+.q-fb{margin-top:16px;padding:14px 16px;border-radius:12px;background:var(--surface-2);font-size:.95rem}
+.q-fb strong{display:block;margin-bottom:2px}
+.q-fb .row{margin-top:12px}
+.quiz-done{text-align:center;padding:10px}
+.quiz-done h3{font-size:2rem;margin:8px auto}
+.quiz-done p{color:var(--ink-2);max-width:50ch;margin:0 auto 16px}
+.rules{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+@media (min-width:760px){.rules{grid-template-columns:1fr 1fr}}
+.rules li{display:flex;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px}
+.rnum{font-family:var(--font-display);font-style:italic;font-size:2rem;line-height:1;color:var(--accent);min-width:24px}
+.rules h3{font-size:1.12rem;margin-bottom:4px}
+.rules p{color:var(--ink-2);font-size:.93rem}
+.disclaimer{margin-top:18px;font-size:.85rem;color:var(--ink-3);max-width:75ch}
+
+/* Zkoušky */
+.zk-top{display:grid;gap:16px}
+@media (min-width:920px){.zk-top{grid-template-columns:1.5fr 1fr}}
+.level-card{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:var(--on-accent);border-radius:20px;padding:24px;position:relative;overflow:hidden}
+.level-card::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--on-accent) 22%,transparent),transparent 70%)}
+.level-card .eyebrow{color:inherit;opacity:.85}
+.level-card h2{font-size:clamp(1.8rem,4vw,2.4rem);margin:8px 0 6px}
+.level-card p{opacity:.9;max-width:52ch}
+.bar{height:9px;border-radius:99px;background:color-mix(in srgb,currentColor 22%,transparent);margin-top:18px;overflow:hidden}
+.bar i{display:block;height:100%;background:currentColor;border-radius:99px;transition:width .4s}
+.bar-meta{display:flex;justify-content:space-between;gap:10px;font-size:.84rem;margin-top:8px;opacity:.9;flex-wrap:wrap}
+.stages{list-style:none;padding:0;margin:16px 0 0;display:flex;flex-wrap:wrap;gap:6px}
+.stages li{font-size:.72rem;padding:3px 9px;border-radius:99px;border:1px solid color-mix(in srgb,currentColor 35%,transparent);opacity:.7}
+.stages li.done{opacity:1;background:color-mix(in srgb,currentColor 16%,transparent)}
+.stages li.now{opacity:1;background:currentColor}
+.stages li.now span{color:var(--accent);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+@media (min-width:760px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.stat b{display:block;font-family:var(--font-display);font-size:1.9rem;line-height:1.1;font-weight:600}
+.stat span{font-size:.82rem;color:var(--ink-3)}
+.favs-box{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.favs-box .chips button{border-style:solid;background:var(--surface-2);display:inline-flex;gap:6px;align-items:center}
+.favs-box .chips .ico{width:15px;height:15px;color:var(--gold)}
+.favs-box .chips .ico path{fill:currentColor}
+.log-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:32px 0 12px}
+.log-head h2{font-size:1.5rem}
+.log{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.log-item{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px}
+.log-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.log-top time{color:var(--ink-3);font-size:.82rem;margin-left:auto}
+.log-item textarea{margin-top:10px;min-height:40px;font-size:.9rem;background:transparent;border-style:dashed}
+.pill{font-size:.74rem;font-weight:700;padding:3px 10px;border-radius:99px;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--c)}
+.pill.ok{--c:var(--ok)} .pill.warn{--c:var(--warn)} .pill.stop{--c:var(--stop)}
+
+/* Patička a toast */
+footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 44px;color:var(--ink-3);font-size:.86rem}
+footer .wrap{display:grid;gap:6px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:1000;width:max-content;max-width:calc(100vw - 32px);font-size:.92rem;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+dialog #toast{bottom:96px}
+@media (max-width:640px){dialog #toast{bottom:128px}}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="curtain" aria-hidden="true"></div>
+
+<header class="site">
+  <div class="wrap head-row">
+    <a class="brand" href="#" data-tab="repertoar" aria-label="Nápověda – úvod">
+      <span class="brand-mark" id="brandMark"></span>
+      <span><strong>Nápověda</strong><small>AI pro lidi z divadla</small></span>
+    </a>
+    <button class="icon-btn" id="themeBtn" data-act="theme" aria-label="Přepnout světlý a tmavý režim"></button>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <nav class="wrap tabs" role="tablist" aria-label="Sekce aplikace">
+    <button class="tab" role="tab" id="t-repertoar" data-tab="repertoar" aria-controls="tab-repertoar">Repertoár promptů</button>
+    <button class="tab" role="tab" id="t-vlastni" data-tab="vlastni" aria-controls="tab-vlastni">Vlastní prompt</button>
+    <button class="tab" role="tab" id="t-pravidla" data-tab="pravidla" aria-controls="tab-pravidla">Pravidla hry</button>
+    <button class="tab" role="tab" id="t-zkousky" data-tab="zkousky" aria-controls="tab-zkousky">Moje zkoušky <span class="tcount" id="logCount"></span></button>
+  </nav>
+</div>
+
+<main class="wrap">
+
+  <!-- REPERTOÁR -->
+  <section class="panel" id="tab-repertoar" role="tabpanel" aria-labelledby="t-repertoar">
+    <div class="hero">
+      <div>
+        <span class="eyebrow">AI pomocník pro lidi z divadla</span>
+        <h1>Kdo zapomene text, má nápovědu. <em>Kdo neví, jak na AI, taky.</em></h1>
+        <p class="sub">Hotové prompty pro každé oddělení divadla, od pokladny po provaziště. Vyberte situaci, doplňte pár údajů a zkopírujte prompt do AI nástroje, který u vás v divadle používáte.</p>
+        <ol class="steps">
+          <li><b>1</b>Vyberte situaci</li>
+          <li><b>2</b>Doplňte pár údajů</li>
+          <li><b>3</b>Zkopírujte prompt do AI</li>
+          <li><b>4</b>Zapište si, jak to dopadlo</li>
+        </ol>
+      </div>
+      <aside class="challenge" id="heroChallenge" aria-live="polite"></aside>
+    </div>
+
+    <h2 class="label">V jakém oddělení pracujete?</h2>
+    <div class="roles" id="roles"></div>
+
+    <div class="toolbar">
+      <label class="search" id="searchBox">
+        <span id="searchIco"></span>
+        <input id="search" type="search" placeholder="Hledat: e-mail, premiéra, tabulka…" aria-label="Hledat v promptech" autocomplete="off">
+      </label>
+      <button class="chip" id="favChip" data-act="only-favs" aria-pressed="false"></button>
+    </div>
+
+    <div id="list"></div>
+  </section>
+
+  <!-- VLASTNÍ PROMPT -->
+  <section class="panel" id="tab-vlastni" role="tabpanel" aria-labelledby="t-vlastni" hidden>
+    <div class="panel-head">
+      <span class="eyebrow">Sestavte si vlastní prompt</span>
+      <h1>Dobrý prompt má pět složek. <em>Jako dobře postavená scéna.</em></h1>
+      <p>Kdo hraje, kde jsme, co se má stát, jak to má vypadat a kde jsou hranice. Nemusíte vyplnit všechno. Čím víc toho ale AI řeknete, tím méně bude hádat.</p>
+    </div>
+    <div class="builder">
+      <div>
+        <div id="bsecs"></div>
+        <div class="bopts">
+          <label><input type="checkbox" id="optAsk"> <span>Ať se mě AI nejdřív zeptá, co jí k dobrému výsledku chybí</span></label>
+          <label><input type="checkbox" id="optUnsure"> <span>Ať na konci přizná, co si domýšlela a čím si není jistá</span></label>
+        </div>
+        <div class="row">
+          <button class="btn btn-ghost btn-sm" data-act="b-example">Vyplnit ukázku</button>
+          <button class="btn btn-ghost btn-sm" data-act="b-clear">Vyčistit</button>
+        </div>
+      </div>
+      <div class="builder-out">
+        <div class="out-card">
+          <div class="meter-row">
+            <div class="meter" id="meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="meter-text" id="meterText" aria-live="polite"></div>
+          </div>
+          <div class="preview" id="bpv" aria-label="Náhled promptu"></div>
+          <div class="out-actions">
+            <button class="btn btn-primary" data-act="b-copy" id="bCopyBtn"></button>
+          </div>
+          <div class="b-rate" id="bRate"></div>
+          <div class="save-row">
+            <input id="saveName" type="text" placeholder="Název šablony, např. Leták na pohádku" aria-label="Název šablony">
+            <button class="btn btn-ghost btn-sm" data-act="b-save">Uložit</button>
+          </div>
+          <div id="savedList"></div>
+        </div>
+        <div class="refine">
+          <h3>Když to napoprvé nesedí</h3>
+          <p>Nezačínejte znovu. Pošlete AI v tom samém okně další pokyn. Kliknutím ho zkopírujete.</p>
+          <div class="chips" id="refine"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRAVIDLA -->
+  <section class="panel" id="tab-pravidla" role="tabpanel" aria-labelledby="t-pravidla" hidden>
+    <div class="panel-head">
+      <span class="eyebrow">Pravidla hry</span>
+      <h1>Co do AI patří <em>a co ne</em></h1>
+      <p>Většina každodenní práce s AI je v pořádku. Pár věcí ale do veřejných nástrojů nepatří nikdy. Tady je semafor, krátký kvíz na procvičení a pět pravidel, která stojí za to mít v hlavě.</p>
+    </div>
+
+    <div class="semafor">
+      <article class="light green">
+        <div class="light-head"><span class="lamp"></span><div><small>Zelená</small><h3>Klidně vložte</h3></div></div>
+        <ul>
+          <li>Veřejné informace: program, anotace, texty z webu</li>
+          <li>Vlastní pracovní poznámky bez jmen a citlivých čísel</li>
+          <li>Technické údaje bez kontaktů na lidi</li>
+          <li>Obecné dotazy, nápady, osnovy, vzorce do tabulek</li>
+        </ul>
+      </article>
+      <article class="light amber">
+        <div class="light-head"><span class="lamp"></span><div><small>Oranžová</small><h3>S rozmyslem</h3></div></div>
+        <ul>
+          <li>Interní dokumenty (koncepce, granty, plány) jen do nástroje, který divadlo schválilo</li>
+          <li>Texty her a překlady jen tehdy, když to dovoluje licence</li>
+          <li>Fotky a videa s lidmi jen se souhlasem těch, kdo jsou na nich</li>
+          <li>E-maily od partnerů raději převyprávějte, bez podpisů a kontaktů</li>
+        </ul>
+      </article>
+      <article class="light red">
+        <div class="light-head"><span class="lamp"></span><div><small>Červená</small><h3>Nevkládejte</h3></div></div>
+        <ul>
+          <li>Osobní údaje diváků a kolegů: jména, e-maily, telefony, adresy</li>
+          <li>Zdravotní údaje, hodnocení lidí, mzdy a honoráře</li>
+          <li>Smlouvy, hesla a přístupové údaje</li>
+          <li>Cokoli, co jste slíbili držet v tajnosti</li>
+        </ul>
+      </article>
+    </div>
+
+    <div class="info-box">
+      <span id="infoIco"></span>
+      <div>
+        <h3>Který nástroj použít?</h3>
+        <p>Ten, který má vaše divadlo schválený. Firemní verze AI nástrojů obvykle nepoužívají vložená data k trénování modelů a divadlo má s dodavatelem smlouvu. U bezplatných osobních účtů to tak být nemusí. Když nevíte, zeptejte se vedení nebo správce IT.</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Kvíz: smí to do AI?</h2>
+    <div class="quiz" id="quiz" aria-live="polite"></div>
+
+    <h2 class="section-title">Pět pravidel hry</h2>
+    <ol class="rules">
+      <li><span class="rnum">1</span><div><h3>AI je nápověda, ne hlavní role</h3><p>Napoví, ale na jevišti stojíte vy. Každý výstup si přečtěte a upravte dřív, než ho pošlete dál.</p></div></li>
+      <li><span class="rnum">2</span><div><h3>Fakta si ověřte</h3><p>AI umí s naprostou jistotou napsat špatné datum, jméno nebo citaci. Co jde ven z divadla, zkontrolujte.</p></div></li>
+      <li><span class="rnum">3</span><div><h3>Osobní údaje zůstávají doma</h3><p>Jména diváků, kontakty, zdravotní informace a honoráře do veřejných nástrojů nepatří. Nahraďte je funkcí nebo zástupným slovem.</p></div></li>
+      <li><span class="rnum">4</span><div><h3>Kontext je polovina výsledku</h3><p>Pište AI jako novému kolegovi, který o vašem divadle nic neví: pro koho to je, proč a v jaké podobě to chcete.</p></div></li>
+      <li><span class="rnum">5</span><div><h3>První verze je čtená zkouška</h3><p>Výsledek dolaďujte dalšími pokyny ve stejném okně. Druhá a třetí odpověď bývá výrazně lepší než první.</p></div></li>
+    </ol>
+    <p class="disclaimer">Tahle stránka je orientační vodítko, ne právní rada. Přednost mají vnitřní pravidla vašeho divadla a pokyny pověřence pro ochranu osobních údajů.</p>
+  </section>
+
+  <!-- ZKOUŠKY -->
+  <section class="panel" id="tab-zkousky" role="tabpanel" aria-labelledby="t-zkousky" hidden>
+    <div class="panel-head">
+      <span class="eyebrow">Moje zkoušky</span>
+      <h1>Každý pokus se počítá</h1>
+      <p>Tady vidíte, co jste s AI vyzkoušeli a jak to dopadlo. Záznamy jsou jen ve vašem prohlížeči. Přehled můžete zkopírovat a poslat kolegům nebo vedoucímu, ať se v divadle šíří to, co funguje.</p>
+    </div>
+    <div class="zk-top">
+      <div class="level-card" id="zkLevel"></div>
+      <aside class="challenge" id="zkChallenge" aria-live="polite"></aside>
+    </div>
+    <div class="stats" id="zkStats"></div>
+    <div id="zkFavs"></div>
+    <div class="log-head">
+      <h2>Deník zkoušek</h2>
+      <div class="row">
+        <button class="btn btn-ghost btn-sm" data-act="export" id="exportBtn"></button>
+        <button class="btn btn-danger btn-sm" data-act="reset">Smazat vše</button>
+      </div>
+    </div>
+    <ul class="log" id="zkLog"></ul>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Nápověda</strong> · AI pomocník pro lidi z divadla</p>
+    <p>Aplikace nic nikam neodesílá. Oblíbené prompty, záznamy a vyplněné údaje zůstávají jen v tomto prohlížeči. Delší vložené texty se neukládají vůbec.</p>
+    <p>Výstupy AI vždy kontrolujte. Přednost mají pravidla vašeho divadla.</p>
+  </div>
+</footer>
+
+<dialog id="detail" aria-labelledby="dlgTitle"></dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- Ikony ---------- */
+var ICONS = {
+  people:'<circle cx="9" cy="8.5" r="3.2"/><path d="M3.5 19.5c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9.5" r="2.5"/><path d="M15.8 14.6c2.3-.2 4.1 1.4 4.7 4.4"/>',
+  megaphone:'<path d="M4 10v4h3l8 4.5v-13L7 10H4z"/><path d="M18.5 9.5a3.5 3.5 0 0 1 0 5"/><path d="M7 14l1.3 5h2.4L9.6 14.6"/>',
+  book:'<path d="M3.5 5.5c3-.9 5.8-.6 8.5 1.2v12.6c-2.7-1.8-5.5-2.1-8.5-1.2z"/><path d="M20.5 5.5c-3-.9-5.8-.6-8.5 1.2v12.6c2.7-1.8 5.5-2.1 8.5-1.2z"/>',
+  mask:'<path d="M5 4.5c4.5 1.6 9.5 1.6 14 0V11c0 4.8-3.2 8.5-7 8.5S5 15.8 5 11z"/><path d="M8.3 10.3c.8-.6 1.8-.6 2.6 0M13.1 10.3c.8-.6 1.8-.6 2.6 0"/><path d="M9.2 14.2c1.7 1.4 3.9 1.4 5.6 0"/>',
+  calendar:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 9.5h16M8.5 3v4M15.5 3v4M8 13.5h3M8 16.5h6"/>',
+  light:'<path d="M3 4h18M12 4v2.5"/><rect x="8" y="6.5" width="8" height="6" rx="2"/><path d="M9.5 12.5L6.5 20M14.5 12.5l3 7.5M12 12.5V20" stroke-dasharray="1.6 2.2"/>',
+  ticket:'<path d="M4 7.5C4 6.7 4.7 6 5.5 6h13c.8 0 1.5.7 1.5 1.5V10a2 2 0 0 0 0 4v2.5c0 .8-.7 1.5-1.5 1.5h-13c-.8 0-1.5-.7-1.5-1.5V14a2 2 0 0 0 0-4z"/><path d="M14.5 6.5v11" stroke-dasharray="1.6 1.9"/>',
+  cap:'<path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.6v4c1.5 1.6 3.4 2.4 5.5 2.4s4-.8 5.5-2.4v-4M21.5 9.5v5"/>',
+  columns:'<path d="M3.5 9L12 4.5 20.5 9M5 9h14M6.5 9v8M10.2 9v8M13.8 9v8M17.5 9v8M4.5 17h15M3.5 20h17"/>',
+  grid:'<rect x="4" y="4" width="7" height="7" rx="1.6"/><rect x="13" y="4" width="7" height="7" rx="1.6"/><rect x="4" y="13" width="7" height="7" rx="1.6"/><rect x="13" y="13" width="7" height="7" rx="1.6"/>',
+  star:'<path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/>',
+  copy:'<rect x="8.5" y="8.5" width="11.5" height="11.5" rx="2"/><path d="M15.5 8.5V5.5c0-.8-.7-1.5-1.5-1.5H5.5C4.7 4 4 4.7 4 5.5V14c0 .8.7 1.5 1.5 1.5h3"/>',
+  close:'<path d="M6 6l12 12M18 6L6 18"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+  moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+  check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  trash:'<path d="M4.5 7h15M10 4h4M6.5 7l1 13h9l1-13M10 11v5M14 11v5"/>',
+  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.5 1.1 1.3 1.1 2.2h5c0-.9.4-1.7 1.1-2.2A6 6 0 0 0 12 3z"/>',
+  alert:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',
+  shell:'<path d="M3.5 18.5h17"/><path d="M5.5 18.5a6.5 6.5 0 0 1 13 0"/><path d="M9 18.5a3 3 0 0 1 6 0"/><path d="M12 12V9.5"/><circle cx="12" cy="7.5" r="1.4"/>',
+  arrow:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  spark:'<path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M6 18l2.5-2.5M15.5 8.5L18 6"/>',
+  shield:'<path d="M12 3l7.5 3v5.5c0 4.5-3.2 8.2-7.5 9.5-4.3-1.3-7.5-5-7.5-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
+  share:'<path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 13v5.5c0 .8.7 1.5 1.5 1.5h11c.8 0 1.5-.7 1.5-1.5V13"/>'
+};
+function icon(n, cls){
+  return '<svg class="ico ' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || '') + '</svg>';
+}
+
+/* ---------- Data: oddělení ---------- */
+var ROLES = [
+  {id:'vsichni',    name:'Pro všechny',        short:'E-maily, porady, tabulky',     icon:'people'},
+  {id:'marketing',  name:'Marketing a PR',     short:'Anotace, sítě, média',         icon:'megaphone'},
+  {id:'dramaturgie',name:'Dramaturgie',        short:'Rešerše, programy, debaty',    icon:'book'},
+  {id:'soubor',     name:'Režie a soubor',     short:'Postavy, zkoušky, nápady',     icon:'mask'},
+  {id:'produkce',   name:'Produkce a provoz',  short:'Harmonogramy, zájezdy, hosté', icon:'calendar'},
+  {id:'technika',   name:'Technika a dílny',   short:'Rider, scéna, kostýmy',        icon:'light'},
+  {id:'divaci',     name:'Divácký servis',     short:'Pokladna, uvaděči, dotazy',    icon:'ticket'},
+  {id:'vzdelavani', name:'Práce s publikem',   short:'Školy, workshopy, úvody',      icon:'cap'},
+  {id:'vedeni',     name:'Vedení a granty',    short:'Žádosti, zprávy, jednání',     icon:'columns'}
+];
+
+/* ---------- Data: prompty ----------
+   Pole v šabloně: [[klíč|Popisek|nápověda]] nebo [[klíč|Popisek|nápověda|area]] / |opt  */
+var CASES = [
+/* Pro všechny */
+{id:'zapis', role:'vsichni', title:'Zápis z porady s úkoly',
+ why:'Z neučesaných poznámek udělá přehledný zápis: co se rozhodlo, kdo co udělá a do kdy.',
+ tpl:`Jsi pečlivý asistent, který v divadle zapisuje porady. Níže jsou moje neučesané poznámky z porady: [[porada|Jaká porada|např. technická porada k premiéře]].
+
+Udělej z nich stručný zápis v této struktuře:
+1. Co jsme rozhodli (v bodech)
+2. Úkoly jako tabulka se sloupci: úkol | kdo | termín
+3. Otevřené otázky, které zůstaly nevyřešené
+
+Nic si nedomýšlej. Když u úkolu chybí osoba nebo termín, napiš „doplnit“.
+
+Poznámky:
+[[poznamky|Vaše poznámky|Vložte poznámky z porady, klidně v heslech|area]]`,
+ tip:'Poznámky můžete nadiktovat do telefonu a přepis vložit sem.',
+ watch:'Jména kolegů jsou osobní údaje. Pokud divadlo nemá schválený nástroj, nahraďte je funkcí, třeba „vedoucí osvětlovačů“.'},
+
+{id:'email', role:'vsichni', title:'Odpověď na nepříjemný e-mail',
+ why:'Když nevíte, jak začít, nebo se bojíte, že odpověď vyzní příkře. Dostanete dvě varianty k úpravě.',
+ tpl:`Pomoz mi odpovědět na e-mail. Píšu jako [[funkce|Vaše funkce|např. vedoucí produkce]] v divadle.
+
+O co v e-mailu jde: [[situace|O co jde|např. hostující soubor si stěžuje, že nedostal technické podmínky včas]]
+Čeho chci odpovědí dosáhnout: [[cil|Cíl odpovědi|např. omluvit se, poslat podklady a navrhnout krátký telefonát]]
+Tón: [[ton|Tón|např. věcný a vstřícný, ale bez podlézání]]
+
+Napiš dvě varianty odpovědi: kratší (do 80 slov) a delší. Piš česky a přirozeně, bez frází typu „Doufám, že se máte dobře“.`,
+ tip:'Původní e-mail stačí převyprávět vlastními slovy. Nemusíte ho kopírovat celý i s podpisy a kontakty.'},
+
+{id:'zjednodus', role:'vsichni', title:'Srozumitelná verze směrnice',
+ why:'Úřední text (směrnici, provozní řád, oběžník) přepíše tak, aby mu rozuměl každý, i nový kolega.',
+ tpl:`Následující text je pro [[publikum|Pro koho to je|např. nové kolegy v provozu]]. Přepiš ho tak, aby mu rozuměl člověk, který o tématu nic neví.
+
+- Krátké věty, žádný úřední jazyk.
+- Všechny povinnosti, termíny a čísla zachovej přesně tak, jak jsou.
+- Na konec přidej 3–5 bodů „Co z toho pro mě plyne“.
+
+Text:
+[[text|Text ke zjednodušení|Vložte text směrnice, pokynu nebo oběžníku|area]]`,
+ watch:'Výsledek porovnejte s originálem. AI občas zjednoduší i to, co se zjednodušit nesmí, třeba výjimku nebo lhůtu.'},
+
+{id:'excel', role:'vsichni', title:'Vzorec do Excelu nebo Tabulek',
+ why:'Spočítá obsazenost, součty za měsíc nebo počty představení a vysvětlí, kam vzorec vložit.',
+ tpl:`Pracuji v programu [[program|Program|např. Excel / Google Tabulky]]. Moje tabulka vypadá takto:
+[[tabulka|Popis tabulky|např. sloupec A datum představení, B název inscenace, C počet prodaných vstupenek, D kapacita sálu|area]]
+
+Potřebuji: [[potreba|Co potřebujete spočítat|např. obsazenost v procentech za každý měsíc zvlášť]]
+
+Napiš vzorec a krok za krokem vysvětli, kam ho vložit. Pokud existuje jednodušší cesta (kontingenční tabulka, filtr), řekni mi o ní.`,
+ tip:'Popište jen, co je ve kterém sloupci. Skutečná data do AI vkládat nemusíte.'},
+
+{id:'preklad', role:'vsichni', title:'Překlad pro zahraniční hosty',
+ why:'Přeloží organizační pokyny, program nebo rider tak, aby seděla i divadelní terminologie.',
+ tpl:`Přelož následující text do jazyka: [[jazyk|Jazyk|např. angličtina]].
+Text je určený pro [[komu|Pro koho|např. hostující tanečníky ze zahraničí]].
+
+Divadelní výrazy (např. inspice, portál, horizont, provaziště) přelož tak, jak se běžně používají v zahraničních divadlech. Když si nejsi jistý, nech v závorce původní český výraz.
+
+Text:
+[[text|Text k překladu|Vložte text|area]]`,
+ watch:'Smlouvy a právní texty po AI vždy nechte zkontrolovat člověkem, který jazyk ovládá.'},
+
+/* Marketing a PR */
+{id:'anotace', role:'marketing', title:'Anotace ve třech délkách',
+ why:'Jedna věta do programu, krátký text na web a delší anotace. Stačí pár vět, které o inscenaci víte.',
+ tpl:`Jsi zkušený copywriter, který píše pro divadlo. Potřebuji anotaci inscenace ve třech délkách.
+
+Inscenace: [[inscenace|Název inscenace|např. Racek]]
+Autor předlohy a režie: [[tvurci|Autor a režie|např. A. P. Čechov, režie Jana Nováková]]
+O čem inscenace je a čím je jiná: [[ocem|O čem to je|2–3 věty vlastními slovy, klidně neučesaně|area]]
+Pro koho je: [[cilovka|Pro koho je|např. dospělí, kteří chodí do divadla jen občas]]
+
+Vytvoř:
+1. Jednu větu do měsíčního programu (max. 25 slov)
+2. Krátkou anotaci na web (do 60 slov)
+3. Delší text (do 150 slov)
+
+Vyhni se klišé jako „strhující“, „nadčasový“ nebo „nenechte si ujít“. Nevymýšlej si nic, co není v zadání.`},
+
+{id:'site', role:'marketing', title:'Plán příspěvků k premiéře',
+ why:'Šest příspěvků na sítě rozložených do tří týdnů před premiérou, i s nápadem na vizuál.',
+ tpl:`Připrav plán příspěvků na sociální sítě k premiéře inscenace [[inscenace|Název inscenace|např. Racek]].
+Premiéra: [[datum|Datum premiéry|např. 14. listopadu]]
+Sítě: [[site|Sítě|např. Instagram a Facebook]]
+Co máme k dispozici: [[materialy|Materiály|např. fotky ze zkoušek, krátká videa, rozhovor s režisérkou]]
+Tón našeho divadla: [[ton|Tón|např. přátelský, trochu vtipný, nikdy povýšený]]
+
+Navrhni 6 příspěvků rozložených do 3 týdnů před premiérou. U každého uveď: kdy, na jakou síť, nápad na vizuál, text příspěvku a výzvu k akci.`,
+ tip:'Přidejte na konec promptu 2–3 vaše starší příspěvky, které se povedly. AI z nich pozná váš styl.'},
+
+{id:'tz', role:'marketing', title:'Tisková zpráva z faktů',
+ why:'Z holých faktů poskládá tiskovou zprávu se správnou stavbou: titulek, perex, tělo, praktické informace.',
+ tpl:`Napiš tiskovou zprávu divadla. Fakta:
+[[fakta|Fakta|co, kdo, kdy, kde, proč je to zajímavé, citace režiséra…|area]]
+
+Struktura: titulek, perex (2–3 věty s tím nejdůležitějším), tělo zprávy, citace, praktické informace (termíny, vstupenky). Kontakt pro média nech jako [doplnit].
+Délka do 300 slov. Piš věcně, novinář musí mít celou zprávu už v perexu. Používej jen fakta, která jsem ti dal(a).`,
+ watch:'Zkontrolujte každé jméno, datum a citaci. Citace nikdy nenechávejte AI vymýšlet, umí je napsat velmi přesvědčivě.'},
+
+{id:'titulky', role:'marketing', title:'Deset variant titulku',
+ why:'Když se zaseknete u titulku plakátu, newsletteru nebo reklamy. Deset možností v různém tónu.',
+ tpl:`Potřebuji titulek pro [[kam|Kam|např. newsletter / plakát / reklamu na Facebooku]] k inscenaci [[inscenace|Název inscenace|např. Racek]].
+Hlavní myšlenka: [[myslenka|Co má titulek říct|např. komedie o lidech, kteří se nedokážou přestat snažit]]
+
+Napiš 10 variant: 3 hravé, 3 vážné, 2 provokativní a 2 úplně obyčejné, informativní. U každé jednou větou napiš, koho by mohla oslovit.`},
+
+/* Dramaturgie */
+{id:'reserse', role:'dramaturgie', title:'Rešerše kontextu hry',
+ why:'Rychlý první přehled: dobový kontext, interpretační linie a otázky pro inscenační tým.',
+ tpl:`Připravuji dramaturgickou rešerši k inscenaci hry [[hra|Hra a autor|např. Hedda Gablerová, Henrik Ibsen]].
+
+Shrň:
+1. Dobový a společenský kontext vzniku hry
+2. Hlavní interpretační linie, které se v inscenační historii objevovaly
+3. Témata, která mohou rezonovat s dnešním publikem. Hrajeme [[kde|Kde a pro koho hrajeme|např. v krajském městě, na malé scéně, pro mladší publikum]].
+4. Pět otázek, které by si inscenační tým měl položit
+
+U každého faktu uveď, jak moc si jsi jistý. Když něco nevíš, napiš to. Nevymýšlej si zdroje ani citace.`,
+ watch:'AI je dobrý start rešerše, ne zdroj. Fakta, letopočty a citace ověřte v odborné literatuře.'},
+
+{id:'program', role:'dramaturgie', title:'Text do programu: úhly a osnova',
+ why:'AI tu nepíše za vás. Nabídne úhly pohledu, osnovy a otázky, ze kterých napíšete vlastní text.',
+ tpl:`Píšu text do programu k inscenaci [[inscenace|Název inscenace|např. Racek]]. Naše koncepce: [[koncepce|Koncepce|2–4 věty o tom, jak inscenaci pojímáme|area]]
+
+Nepiš hotový text. Místo toho:
+1. Navrhni 3 různé úhly, kterými by text mohl uchopit téma
+2. Ke každému úhlu napiš osnovu o 4–5 bodech
+3. Polož mi 5 otázek. Až na ně odpovím, budu mít materiál na vlastní text.`,
+ tip:'Vlastní text pište sami. AI je tady sparingpartner, ne autor.'},
+
+{id:'debata', role:'dramaturgie', title:'Otázky pro debatu s diváky',
+ why:'Dvanáct otázek pro besedu po představení, od lehkých po hlubší, a tipy, když se nikdo nehlásí.',
+ tpl:`Po představení inscenace [[inscenace|Název inscenace|např. Racek]] proběhne debata s diváky. Moderuje [[moderator|Kdo moderuje|např. dramaturgyně]].
+Témata inscenace: [[temata|Témata|např. stárnutí rodičů, péče, vina]]
+Publikum: [[publikum|Publikum|např. středoškoláci / abonenti / smíšené]]
+
+Navrhni 12 otázek: 4 na zahřátí (lehké, osobní), 4 do hloubky a 4, které propojí inscenaci se životem diváků. Přidej 3 tipy, jak debatu rozproudit, když se nikdo nehlásí.`},
+
+{id:'oponent', role:'dramaturgie', title:'Oponentura koncepce',
+ why:'Kritický pohled zvenčí dřív, než koncepci představíte souboru nebo vedení.',
+ tpl:`Chovej se jako kritický, ale férový dramaturg z jiného divadla. Tady je koncepce naší inscenace:
+[[koncepce|Koncepce|Popište záměr inscenace|area]]
+
+Najdi slabá místa: co je nejasné, co si protiřečí, co může publikum pochopit jinak, než chceme. Buď konkrétní a nic nepřikrašluj. Na konec napiš 3 věci, které na koncepci fungují.`},
+
+/* Režie a soubor */
+{id:'postava', role:'soubor', title:'Otázky k postavě',
+ why:'AI vám nedá hotový výklad. Položí otázky, přes které postavu objevíte sami.',
+ tpl:`Připravuji postavu [[postava|Postava|např. Nina v Rackovi]]. Co právě řeším: [[ukol|Co řešíte|např. proč se ve čtvrtém dějství vrací]]
+
+Nedávej mi odpovědi. Polož mi 15 otázek, které mi pomohou postavu objevit: na její minulost, touhy, vztahy a rozpory. Seřaď je od jednoduchých po nepříjemné.`,
+ tip:'Funguje i ve dvojici: jeden čte otázky, druhý odpovídá za postavu.'},
+
+{id:'rozehrati', role:'soubor', title:'Rozehřátí a cvičení ke zkoušce',
+ why:'Tři cvičení na míru tématu zkoušky, s časem, průběhem a s tím, na co si dát pozor.',
+ tpl:`Vedu rozehřátí souboru před zkouškou. Máme [[cas|Čas|např. 15 minut]], počet lidí: [[pocet|Počet lidí|např. 8 herců]], prostor: [[prostor|Prostor|např. zkušebna bez scény]].
+Na co se zkouška zaměřuje: [[tema|Téma zkoušky|např. napětí mezi dvěma rodinami]]
+
+Navrhni 3 cvičení navázaná na téma. U každého uveď cíl, průběh krok za krokem, délku a na co si dát pozor.`},
+
+{id:'scenicke', role:'soubor', title:'Nápady na scénické řešení',
+ why:'Osm různých řešení jedné situace, od nejjednoduššího po nejodvážnější.',
+ tpl:`Hledám nápady, jak scénicky vyřešit situaci: [[situace|Situace|např. postava se topí, ale na jevišti nemáme vodu]]
+Omezení: [[omezeni|Omezení|např. malá scéna, žádné propadlo, nízký rozpočet]]
+Estetika inscenace: [[estetika|Estetika|např. minimalistická, hodně práce se světlem]]
+
+Navrhni 8 různých řešení, od nejjednoduššího po nejodvážnější. U každého napiš, co je potřeba technicky a na co si dát pozor.`,
+ watch:'Nápady proberte s technikou a bezpečnostním technikem dřív, než je slíbíte.'},
+
+{id:'text', role:'soubor', title:'Plán učení textu',
+ why:'Realistický rozpis učení role po dnech a techniky, které pomáhají u dlouhých monologů.',
+ tpl:`Musím se naučit roli: [[role|Rozsah role|např. 40 replik, z toho tři dlouhé monology]]. Termín: [[termin|Do kdy|např. za 3 týdny]]. Čas, který mám: [[cas|Čas denně|např. 45 minut denně, hlavně v tramvaji]].
+
+Navrhni realistický plán učení po dnech a 5 technik, které pomáhají zapamatovat si dlouhý text. Text hry ti posílat nebudu.`,
+ watch:'Text hry do AI nevkládejte. Bývá chráněný autorským právem a licenční smlouvou.'},
+
+/* Produkce a provoz */
+{id:'harmonogram', role:'produkce', title:'Zpětný harmonogram k premiéře',
+ why:'Od data premiéry zpátky po týdnech: co, kdo a na čem to závisí. Upozorní na místa, kde hrozí skluz.',
+ tpl:`Jsem produkční v divadle. Premiéra inscenace [[inscenace|Název inscenace|např. Racek]] je [[datum|Datum premiéry|např. 14. 11.]]. Dnes je [[dnes|Dnešní datum|např. 1. 9.]].
+
+Co je potřeba stihnout: [[ukoly|Co musíte stihnout|např. výroba scény, kostýmy, fotky, plakát, tisková zpráva, generálky|area]]
+Omezení: [[omezeni|Omezení|např. dílny jsou do 15. 10. vytížené jinou inscenací]]
+
+Sestav zpětný harmonogram po týdnech jako tabulku: týden | co | kdo (oddělení) | na čem to závisí. Upozorni na místa, kde hrozí skluz.`},
+
+{id:'zajezd', role:'produkce', title:'Checklist na zájezd',
+ why:'Kompletní seznam od tří týdnů předem po návrat, rozdělený podle toho, kdo za co odpovídá.',
+ tpl:`Sestav checklist pro zájezd s inscenací [[inscenace|Název inscenace|např. Racek]] do [[kam|Kam|např. divadla v jiném městě, 200 km]].
+Kdo jede: [[kdo|Kdo jede|např. 12 herců, 6 techniků, kamion s dekoracemi]]
+Termín: [[termin|Termín|např. 2 dny, příjezd den předem]]
+
+Rozděl checklist na: 3 týdny předem, týden předem, den odjezdu, na místě, po návratu. U každé položky uveď, kdo za ni obvykle odpovídá.`},
+
+{id:'hoste', role:'produkce', title:'Organizační e-mail pro hosty',
+ why:'Všechny praktické informace pro hosty seřazené tak, jak je budou potřebovat, od příjezdu dál.',
+ tpl:`Napiš organizační e-mail pro [[komu|Pro koho|např. hostující lektorku / zahraniční soubor]]. Informace, které musí obsahovat:
+[[info|Informace|příjezd, adresa vrátnice, parkování, čas zkoušky, kontakt na inspici, ubytování…|area]]
+
+Seřaď informace tak, jak je bude host postupně potřebovat (od příjezdu dál). Časy a adresy dej do přehledného seznamu. Tón: přátelský a stručný. Jazyk: [[jazyk|Jazyk|např. čeština]].`,
+ watch:'Telefonní čísla a jména kolegů doplňte až do hotového e-mailu, do AI je psát nemusíte.'},
+
+{id:'rozpocet', role:'produkce', title:'Struktura rozpočtu',
+ why:'Navrhne kategorie a sloupce rozpočtové tabulky a připomene položky, na které se často zapomíná.',
+ tpl:`Připravuji rozpočet: [[projekt|Projekt|např. nová inscenace na malé scéně / letní festival]]. Celková částka: [[castka|Částka|např. 450 000 Kč, nebo napište „zatím nevím“]].
+
+Navrhni strukturu rozpočtové tabulky: kategorie nákladů, položky, na které se v divadle často zapomíná, a sloupce pro průběžné sledování (plán, skutečnost, rozdíl). Neodhaduj konkrétní ceny, jen strukturu.`},
+
+/* Technika a dílny */
+{id:'rider', role:'technika', title:'Technický rider přehledně',
+ why:'Rozdělí rider podle oddělení, najde, co chybí nebo je nejasné, a připraví otázky pro druhou stranu.',
+ tpl:`Tady je technický rider ([[ceho|Čí rider|např. hostujícího souboru / naší inscenace na zájezd]]):
+[[rider|Text rideru|Vložte text rideru|area]]
+
+1. Udělej z něj přehledný seznam požadavků podle oddělení: světla, zvuk, scéna a jeviště, šatny, ostatní.
+2. Označ položky, které jsou nejasné nebo chybí (např. rozměry, příkon, počet okruhů).
+3. Napiš seznam otázek, které je potřeba vyjasnit s druhou stranou.
+[[navic|Něco navíc|např. Celý přehled přelož do angličtiny.|opt]]`,
+ tip:'Kontakty a jména z rideru před vložením smažte, pro rozbor nejsou potřeba.'},
+
+{id:'zavada', role:'technika', title:'Diagnostika technické závady',
+ why:'Postup hledání příčiny od té nejpravděpodobnější. Hodí se, když kolega na telefonu nebere.',
+ tpl:`Řeším technický problém: [[problem|Problém|např. pult nevidí DMX signál na druhém universu]]
+Zařízení: [[zarizeni|Zařízení|výrobce a model]]
+Co už jsem zkusil(a): [[zkouseno|Co jste zkusili|např. restart pultu, výměna kabelu]]
+
+Postupuj jako zkušený divadelní technik. Navrhni postup diagnostiky od nejpravděpodobnějších a nejjednodušších příčin. Když si nejsi jistý konkrétním modelem, řekni to a poraď, kde v manuálu hledat.`,
+ watch:'U elektřiny, tahů a zavěšených břemen platí předpisy a revize, ne rada AI.'},
+
+{id:'soupis', role:'technika', title:'Soupis kostýmů a rekvizit',
+ why:'Z poznámek ze zkoušek udělá tabulku po postavách a scénách, kterou zkopírujete rovnou do Excelu.',
+ tpl:`Z mých poznámek udělej tabulku [[co|Co sepisujeme|např. kostýmů / rekvizit]] k inscenaci [[inscenace|Název inscenace|např. Racek]].
+Sloupce: [[sloupce|Sloupce tabulky|např. postava, položka, scéna, stav (máme / vyrobit / koupit), poznámka]]
+Seřaď podle pořadí scén. Co v poznámkách není jasné, označ otazníkem a nedomýšlej.
+
+Poznámky:
+[[poznamky|Poznámky|Vložte poznámky ze zkoušek|area]]`,
+ tip:'Tabulku z odpovědi zkopírujete rovnou do Excelu nebo Google Tabulek.'},
+
+{id:'dobova', role:'technika', title:'Dobová rešerše pro výpravu',
+ why:'Materiály, barvy, tvary a detaily, které dobu prozradí. Plus chyby, které se v inscenacích často opakují.',
+ tpl:`Navrhujeme [[co|Co navrhujete|např. kostýmy / scénu / rekvizity]] pro inscenaci, která se odehrává v této době a prostředí: [[doba|Doba a prostředí|např. Brno, 30. léta 20. století, dělnická rodina]].
+
+Popiš typické materiály, barvy, střihy a tvary, předměty denní potřeby a detaily, které dobu prozradí. Přidej 5 věcí, které se v inscenacích o té době často dělají špatně. Doporuč, jaké typy zdrojů (muzea, archivy, fotosbírky) použít k ověření.`,
+ watch:'Popisy berte jako vodítko pro hledání obrazových zdrojů, ne jako jejich náhradu.'},
+
+{id:'kontrola', role:'technika', title:'Kontrolní seznam před představením',
+ why:'Krátký checklist podle oddělení, který se dá projít za deset minut.',
+ tpl:`Sestav kontrolní seznam pro [[kdy|Kdy|např. kontrolu jeviště před představením]] na scéně typu [[typ|Typ scény|např. kukátková scéna s provazištěm]]. Specifika inscenace: [[specifika|Specifika|např. pyrotechnika, práce ve výšce, kouř]].
+
+Rozděl ho podle oddělení a udělej ho tak krátký, aby se dal projít za 10 minut. Na konec napiš, které body je potřeba sladit s provozním řádem a bezpečnostními předpisy divadla.`,
+ watch:'Checklist doplňuje provozní řád a předpisy BOZP, nenahrazuje je.'},
+
+/* Divácký servis */
+{id:'stiznost', role:'divaci', title:'Odpověď na stížnost diváka',
+ why:'Lidská odpověď s omluvou tam, kde patří, bez výmluv a úředních frází.',
+ tpl:`Divák nám napsal stížnost. O co jde: [[stiznost|O co jde|např. představení začalo o 20 minut později a nikdo nic neoznámil]]
+Jak to bylo z naší strany: [[nase|Naše strana|např. technická porucha, informovali jsme jen v šatně]]
+Co můžeme nabídnout: [[nabidka|Co můžete nabídnout|např. omluvu a vstupenku na jiné představení]]
+
+Napiš odpověď: lidsky, s omluvou tam, kde je na místě, bez výmluv a úředních frází. Do 150 slov.`,
+ watch:'Jméno a kontakt diváka do AI nevkládejte. Oslovení doplníte až v e-mailu.'},
+
+{id:'faq', role:'divaci', title:'Časté otázky na web',
+ why:'Z vašich podkladů sestaví sekci otázek a odpovědí tak, jak se ptají diváci.',
+ tpl:`Sestav sekci Časté otázky pro web divadla. Podklady:
+[[podklady|Podklady|vstupenky, rezervace, slevy, bezbariérový přístup, šatna, parkování, vstup po začátku představení…|area]]
+
+Napiš 10–12 otázek tak, jak by je položil divák, a k nim krátké a jasné odpovědi. Použij jen informace z podkladů. Kde informace chybí, napiš [doplnit].`},
+
+{id:'skoly', role:'divaci', title:'Nabídka představení pro školy',
+ why:'Krátký e-mail pro učitele, kteří mají málo času. Nejdůležitější informace v prvních dvou větách.',
+ tpl:`Napiš e-mailovou nabídku pro [[komu|Komu|např. učitele češtiny na středních školách]] na představení [[inscenace|Název inscenace|např. Racek]].
+Proč je to pro školy zajímavé: [[proc|Proč|např. povinná četba, doprovodný workshop, debata s herci]]
+Praktické informace: [[info|Praktické informace|termíny, cena pro skupiny, jak objednat]]
+
+Maximálně 150 slov a k tomu 3 varianty předmětu e-mailu. Učitelé mají málo času, nejdůležitější informace musí být v prvních dvou větách.`},
+
+{id:'uvadeci', role:'divaci', title:'Pokyny pro uvaděče a pokladnu',
+ why:'Jedna strana pro mimořádnou situaci: co říct divákům doslova, co dělat a koho volat.',
+ tpl:`Připrav stručné pokyny pro uvaděče a pokladní k této situaci: [[situace|Situace|např. představení se stroboskopem a kouřem / vyprodaný sál a čekací listina]]
+
+Formát: maximálně jedna strana v bodech. Uveď, co říct divákům (doslovné věty), co dělat a koho volat. Kontakty nech jako [doplnit].`},
+
+/* Práce s publikem */
+{id:'pracovni-list', role:'vzdelavani', title:'Pracovní list k inscenaci',
+ why:'Úkoly pro žáky před představením nebo po něm a k tomu krátký metodický list pro učitele.',
+ tpl:`Vytvoř pracovní list pro žáky [[vek|Ročník|např. 8. a 9. třídy ZŠ]] k inscenaci [[inscenace|Název inscenace|např. Racek]]. Téma inscenace: [[tema|Téma|např. dospívání a první láska]].
+Pracovní list má [[kdy|K čemu slouží|např. připravit žáky před představením / pomoct zpracovat zážitek po něm]].
+
+Obsah: 5–7 úkolů různého typu (otázka k zamyšlení, krátké psaní, kresba, práce ve dvojici). Žádné testové otázky typu „kdo je autor“. Přidej krátký metodický list pro učitele.`},
+
+{id:'workshop', role:'vzdelavani', title:'Plán workshopu',
+ why:'Minutáž po blocích s cíli, instrukcemi pro lektora a plánem B, když skupina nespolupracuje.',
+ tpl:`Navrhni workshop na [[delka|Délka|např. 90 minut]] pro [[skupina|Skupina|např. seniory / studenty / rodiny s dětmi]] navázaný na inscenaci [[inscenace|Název inscenace|např. Racek]].
+Cíl: [[cil|Cíl|např. aby si účastníci vyzkoušeli, jak vzniká scéna]]
+Prostor a pomůcky: [[prostor|Prostor a pomůcky|např. zkušebna, židle, flipchart]]
+
+Rozepiš minutáž po blocích. U každého bloku uveď cíl, aktivitu, instrukce pro lektora a co dělat, když skupina nespolupracuje.`},
+
+{id:'uvod', role:'vzdelavani', title:'Pětiminutový úvod před představením',
+ why:'Osnova mluveného úvodu pro publikum, které v divadle moc nebylo. Bez spoilerů a bez kázání.',
+ tpl:`Mám 5 minut na úvod před představením [[inscenace|Název inscenace|např. Racek]] pro [[publikum|Publikum|např. středoškoláky, kteří v divadle moc nebyli]].
+
+Napiš osnovu úvodu: jak navázat kontakt, co jim prozradit (bez spoilerů), na co se mají dívat a jedno pravidlo chování v divadle řečené tak, aby neznělo jako kázání. Je to mluvená řeč, ne text ke čtení.`},
+
+{id:'evaluace', role:'vzdelavani', title:'Krátký evaluační dotazník',
+ why:'Šest otázek na tři minuty, ze kterých zjistíte, co program účastníkům opravdu dal.',
+ tpl:`Po akci [[akce|Akce|např. workshop / debata / program pro školy]] chci zjistit, co účastníkům dala. Navrhni krátký dotazník (max. 6 otázek, vyplnění do 3 minut) pro [[kdo|Kdo vyplňuje|např. učitele / žáky / dospělé]]. Kombinuj škálu a otevřené otázky. U každé otázky napiš, co se z ní dozvím.`},
+
+/* Vedení a granty */
+{id:'grant', role:'vedeni', title:'Kontrola grantové žádosti',
+ why:'AI se podívá na žádost očima hodnotitele: kde je nejasná, kde jen opakuje fráze a co doplnit.',
+ tpl:`Chovej se jako hodnotitel grantové výzvy: [[vyzva|Výzva|např. městský grant na kulturu]]. Hodnoticí kritéria:
+[[kriteria|Hodnoticí kritéria|Vložte kritéria z výzvy|area]]
+
+Tady je text naší žádosti:
+[[zadost|Text žádosti|Vložte text žádosti (bez rozpočtu a osobních údajů)|area]]
+
+Ohodnoť žádost podle každého kritéria, najdi nejasná místa a obecné fráze, které hodnotitele nepřesvědčí. Navrhni konkrétní úpravy, ale nepřepisuj celý text.`,
+ watch:'Interní dokumenty vkládejte jen do nástroje, který divadlo schválilo (firemní účet).'},
+
+{id:'vyrocka', role:'vedeni', title:'Čísla do textu výroční zprávy',
+ why:'Ze statistik sezóny udělá čtivý text pro zřizovatele i veřejnost a čísla přitom nezmění.',
+ tpl:`Mám tato čísla za sezónu [[sezona|Sezóna|např. 2025/26]]:
+[[cisla|Čísla|počet představení, diváků, premiér, obsazenost, zájezdy…|area]]
+
+Napiš z nich text do výroční zprávy (do 200 slov), čtivý pro zřizovatele i veřejnost. Čísla neměň ani nezaokrouhluj. Pokud z nich něco dopočítáváš (např. procenta), uveď výpočet zvlášť pod textem, ať ho můžu zkontrolovat.`,
+ watch:'Každé číslo v hotovém textu porovnejte s podklady.'},
+
+{id:'jednani', role:'vedeni', title:'Příprava na těžké jednání',
+ why:'Nejsilnější argumenty, pravděpodobné námitky a odpovědi na ně. Než půjdete za zřizovatelem nebo partnerem.',
+ tpl:`Připravuji se na jednání. S kým: [[kym|S kým jednáte|např. zástupci zřizovatele / partner ze soukromé firmy]]. Téma: [[tema|Téma|např. navýšení příspěvku na provoz malé scény]]. Co chci získat: [[cil|Cíl|např. souhlas s navýšením od příští sezóny]].
+
+1. Napiš 5 nejsilnějších argumentů pro náš návrh.
+2. Napiš 5 námitek, které pravděpodobně uslyším, a ke každé možnou odpověď.
+3. Co bych měl(a) mít připravené na papíře (čísla, podklady).`},
+
+{id:'zmena', role:'vedeni', title:'Jak oznámit změnu týmu',
+ why:'Krátké sdělení o změně a odpovědi na otázky, které lidi napadnou jako první.',
+ tpl:`Potřebuji zaměstnancům oznámit změnu: [[zmena|Změna|např. nový systém rozpisu služeb od ledna]]
+Proč ji děláme: [[proc|Proč|např. dnes se služby plánují ve třech různých tabulkách]]
+Co to pro lidi znamená v praxi: [[dopad|Dopad|např. služby uvidí v aplikaci v telefonu, výměny přes vedoucího]]
+
+Napiš krátké sdělení (do 200 slov) a pod něj 5 otázek, které lidé pravděpodobně položí, i s odpověďmi. Tón: otevřený, bez manažerských frází.`}
+];
+
+var QUIZ = [
+ {q:'Anotace inscenace, která už visí na webu divadla. Chcete z ní udělat příspěvek na Instagram.', a:'green',
+  why:'Je to veřejná informace. Klidně ji vložte.'},
+ {q:'Export abonentů z pokladního systému: jména, e-maily a telefony. Chcete je roztřídit podle zájmů.', a:'red',
+  why:'Osobní údaje diváků do běžných AI nástrojů nepatří. Na třídění použijte pokladní systém nebo tabulku, případně data nejdřív anonymizujte.'},
+ {q:'Celý text nové hry, kterou divadlo uvede. Chcete nechat vypsat, kdo je ve které scéně.', a:'amber',
+  why:'Text hry chrání autorské právo a licenční smlouva s agenturou. Nejdřív zjistěte, co licence dovoluje. Bezpečnější je popsat scény vlastními slovy.'},
+ {q:'Vaše poznámky z technické porady, kde nejsou jména, jen funkce.', a:'green',
+  why:'Pracovní poznámky bez osobních údajů a citlivých čísel jsou v pořádku.'},
+ {q:'Tabulka honorářů hostujících umělců ze smluv. Chcete spočítat součty.', a:'red',
+  why:'Honoráře a podmínky smluv jsou důvěrné. Vzorec si nechte poradit, ale čísla do AI nevkládejte.'},
+ {q:'Lékařská zpráva kolegyně, kvůli které se mění obsazení. Chcete napsat oznámení souboru.', a:'red',
+  why:'Zdravotní údaje patří k nejcitlivějším vůbec. Do AI je nevkládejte a v oznámení důvod nepřítomnosti neuvádějte.'},
+ {q:'Rozpracovaná grantová žádost bez rozpočtu a osobních údajů. Chcete zpětnou vazbu.', a:'amber',
+  why:'Je to interní dokument. Patří do nástroje, který divadlo schválilo (typicky firemní účet). Do soukromé bezplatné verze raději ne.'},
+ {q:'Fotka ze zkoušky s herci, ze které chcete udělat plakát.', a:'amber',
+  why:'Na fotce jsou lidé a jejich podoba je osobní údaj. Upravovat ji jde, ale se souhlasem herců a podle pravidel divadla pro práci s obrazem.'},
+ {q:'Technický rider hostujícího souboru, ze kterého jste smazali jména a telefony.', a:'green',
+  why:'Technické údaje bez kontaktů jsou v pořádku. Přesně takhle to má vypadat.'}
+];
+var QLABEL = {green:'Klidně vložit', amber:'S rozmyslem', red:'Nevkládat'};
+
+var BUILD = [
+ {key:'role', name:'Obsazení', q:'Koho má AI hrát?', ph:'např. zkušený divadelní copywriter', mode:'replace',
+  chips:['zkušený dramaturg','copywriter, který píše pro divadlo','produkční s dlouholetou praxí','lektor dramatické výchovy','kritický, ale férový oponent','trpělivý učitel Excelu']},
+ {key:'kontext', name:'Situace', q:'Kde jsme, pro koho to je a proč to potřebujete', ph:'např. Jsme městské divadlo. V prosinci hrajeme pohádku a chceme přilákat rodiny z okolních obcí.', mode:'sentence',
+  chips:['Pracuji v divadle jako…','Jsme městské repertoárové divadlo.','Výstup je pro diváky, kteří do divadla chodí jen občas.','Výstup je pro kolegy z jiného oddělení.','Máme málo času a malý rozpočet.']},
+ {key:'ukol', name:'Akce', q:'Co přesně má AI udělat?', ph:'např. Navrhni text letáku, který rodiče přesvědčí, že výlet do divadla stojí za to.', mode:'sentence',
+  chips:['Navrhni…','Shrň…','Přepiš…','Zkontroluj a najdi slabá místa v…','Vymysli 10 variant…','Vysvětli mi krok za krokem…']},
+ {key:'format', name:'Forma', q:'Jak má výsledek vypadat?', ph:'např. do 80 slov, ve 3 variantách', mode:'list',
+  chips:['v bodech','jako tabulka','ve 3 variantách','do 100 slov','jako e-mail i s předmětem','krok za krokem','s nadpisy']},
+ {key:'mantinely', name:'Mantinely', q:'Tón, délka a co nedělat', ph:'např. Tón přátelský, ne úřední. Nevymýšlej si fakta.', mode:'sentence',
+  chips:['Piš česky a přirozeně, bez frází.','Nevymýšlej si fakta, jména ani čísla.','Tón přátelský, ne úřední.','Vyhni se anglicismům.','Buď stručný.','Když něco nevíš, napiš to.']}
+];
+var EXAMPLE = {
+  role:'copywriter, který píše pro divadlo',
+  kontext:'Jsme městské divadlo. V prosinci hrajeme pohádku pro rodiny s dětmi od 5 let a chceme přilákat rodiny z okolních obcí, které k nám zatím nejezdí.',
+  ukol:'Navrhni text letáku, který rodiče přesvědčí, že výlet do divadla stojí za to.',
+  format:'do 80 slov, ve 3 variantách',
+  mantinely:'Tón přátelský, ne úřední. Nevymýšlej si fakta, jména ani čísla.',
+  ask:true, unsure:false
+};
+var REFINE = [
+ 'Zkrať to na polovinu a nech jen to podstatné.',
+ 'Přepiš to lidštěji, jako bys to říkal kolegovi na chodbě.',
+ 'Dej mi 3 úplně odlišné varianty.',
+ 'Co sis v odpovědi domyslel? Vypiš to zvlášť.',
+ 'Označ místa, kde si nejsi jistý fakty.',
+ 'Polož mi otázky, které by ti pomohly výsledek zlepšit.',
+ 'Přepiš to pro člověka, který v divadle nikdy nebyl.',
+ 'Podívej se na to očima kritika a najdi 3 slabiny.'
+];
+var LEVELS = [
+ {min:0,  name:'Před čtenou zkouškou', desc:'Zatím jste nic nevyzkoušeli. Vyberte si první prompt, zabere to pět minut.'},
+ {min:1,  name:'Čtená zkouška',        desc:'První krok máte za sebou. Zkuste prompt z jiného oddělení, než je vaše.'},
+ {min:3,  name:'Aranžovací zkoušky',   desc:'AI začínáte mít v ruce. Zkuste si sestavit vlastní prompt.'},
+ {min:6,  name:'Generálka',            desc:'AI je pro vás běžný nástroj. Pošlete kolegům, co vám funguje.'},
+ {min:10, name:'Premiéra',             desc:'Patříte k těm, kdo v divadle AI opravdu používají. Co takhle naučit kolegu?'},
+ {min:15, name:'Stálice repertoáru',   desc:'Máte za sebou kus repertoáru. Navrhněte v divadle vlastní šablony pro celé oddělení.'}
+];
+var RLABEL = {ano:'Pomohlo', napul:'Napůl', ne:'Nepomohlo'};
+var RCLS = {ano:'ok', napul:'warn', ne:'stop'};
+var GLOBAL_KEYS = ['inscenace','funkce'];
+var DEFAULTS = { dnes: function(){ return new Date().toLocaleDateString('cs-CZ'); } };
+
+/* ---------- Úložiště ---------- */
+var NS = 'napoveda.v1.';
+var store = {
+  get: function(k, d){ try { var v = localStorage.getItem(NS + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set: function(k, v){ try { localStorage.setItem(NS + k, JSON.stringify(v)); } catch(e){} },
+  clear: function(){ try { Object.keys(localStorage).forEach(function(k){ if (k.indexOf(NS) === 0) localStorage.removeItem(k); }); } catch(e){} }
+};
+function emptyBuilder(){ return {role:'',kontext:'',ukol:'',format:'',mantinely:'',ask:true,unsure:false}; }
+
+var S = {
+  tab: store.get('tab', 'repertoar'),
+  role: store.get('role', 'all'),
+  favs: store.get('favs', []),
+  log: store.get('log', []),
+  globals: store.get('globals', {}),
+  caseVals: store.get('caseVals', {}),
+  builder: Object.assign(emptyBuilder(), store.get('builder', {})),
+  saved: store.get('saved', []),
+  onlyFavs: false, query: '', challengeOffset: 0, mem: {},
+  quiz: {i:0, score:0, answered:null}
+};
+if (!Array.isArray(S.favs)) S.favs = [];
+if (!Array.isArray(S.log)) S.log = [];
+if (!Array.isArray(S.saved)) S.saved = [];
+
+/* ---------- Pomocníci ---------- */
+function $(s, r){ return (r || document).querySelector(s); }
+function $$(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
+function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+var NB_RE = /(^|[\s(„])([vkszouaiVKSZOUAI]) /g;
+function nb(s){ return s.replace(NB_RE, '$1$2 ').replace(NB_RE, '$1$2 '); }
+function nbDom(root){
+  if (!root) return;
+  var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode:function(n){
+    var p = n.parentNode; if (!p) return NodeFilter.FILTER_REJECT;
+    return /^(SCRIPT|STYLE|TEXTAREA|INPUT|CODE|PRE)$/.test(p.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+  }});
+  var n; while ((n = w.nextNode())) { var v = nb(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; }
+}
+function put(el, html){ if (!el) return; el.innerHTML = html; nbDom(el); }
+function norm(s){ return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); }
+function plural(n, a, b, c){ return n === 1 ? a : (n >= 2 && n <= 4 ? b : c); }
+function fmtDate(iso){ try { return new Date(iso).toLocaleDateString('cs-CZ'); } catch(e){ return ''; } }
+function roleById(id){ for (var i = 0; i < ROLES.length; i++) if (ROLES[i].id === id) return ROLES[i]; return ROLES[0]; }
+function caseById(id){ for (var i = 0; i < CASES.length; i++) if (CASES[i].id === id) return CASES[i]; return null; }
+function isFav(id){ return S.favs.indexOf(id) !== -1; }
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function truncate(s, n){ s = String(s).trim().replace(/\s+/g, ' '); return s.length > n ? s.slice(0, n - 1) + '…' : s; }
+
+var toastTimer;
+function toast(msg){
+  var el = $('#toast');
+  var host = document.querySelector('dialog[open]') || document.body;
+  if (el.parentNode !== host) host.appendChild(el);
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 3600);
+}
+function copyText(txt){
+  return new Promise(function(resolve){
+    function fallback(){
+      try {
+        var host = document.querySelector('dialog[open]') || document.body;
+        var ta = document.createElement('textarea');
+        ta.value = txt; ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed'; ta.style.top = '0'; ta.style.left = '-9999px'; ta.style.opacity = '0';
+        host.appendChild(ta); ta.select(); ta.setSelectionRange(0, txt.length);
+        var ok = document.execCommand('copy'); host.removeChild(ta); resolve(ok);
+      } catch(e){ resolve(false); }
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(txt).then(function(){ resolve(true); }, fallback);
+    } else { fallback(); }
+  });
+}
+function selectEl(el){
+  try { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch(e){}
+}
+
+/* ---------- Šablony ---------- */
+var TOKEN_SRC = '\\[\\[([^\\]|]+)\\|([^\\]|]+)\\|([^\\]|]*)(?:\\|([a-z,]+))?\\]\\]';
+function fieldsOf(tpl){
+  var re = new RegExp(TOKEN_SRC, 'g'), m, seen = {}, out = [];
+  while ((m = re.exec(tpl))) {
+    if (seen[m[1]]) continue; seen[m[1]] = 1;
+    var fl = (m[4] || '').split(',');
+    out.push({key:m[1], label:m[2], ph:m[3], area:fl.indexOf('area') !== -1, opt:fl.indexOf('opt') !== -1});
+  }
+  return out;
+}
+CASES.forEach(function(c){ c.fields = fieldsOf(c.tpl); });
+
+function renderTemplate(tpl, vals, html){
+  var re = new RegExp(TOKEN_SRC, 'g'), m, last = 0, out = '';
+  while ((m = re.exec(tpl))) {
+    var lit = tpl.slice(last, m.index);
+    out += html ? esc(lit) : lit;
+    var v = String(vals[m[1]] || '').trim();
+    var opt = (m[4] || '').indexOf('opt') !== -1;
+    if (v) out += html ? '<span class="filled">' + esc(v) + '</span>' : v;
+    else if (!opt) out += html ? '<mark class="ph">[' + esc(m[2]) + ']</mark>' : '[' + m[2] + ']';
+    last = re.lastIndex;
+  }
+  var rest = tpl.slice(last);
+  out += html ? esc(rest) : rest;
+  return html ? out.replace(/\n{3,}/g, '\n\n').trim() : out.replace(/\n{3,}/g, '\n\n').trim();
+}
+function valsFor(c){
+  var v = Object.assign({}, S.caseVals[c.id] || {}, S.mem[c.id] || {});
+  GLOBAL_KEYS.forEach(function(k){ if (S.globals[k] != null) v[k] = S.globals[k]; });
+  return v;
+}
+function setVal(c, f, val){
+  if (GLOBAL_KEYS.indexOf(f.key) !== -1) { S.globals[f.key] = val; store.set('globals', S.globals); }
+  else if (f.area) { (S.mem[c.id] = S.mem[c.id] || {})[f.key] = val; }
+  else { (S.caseVals[c.id] = S.caseVals[c.id] || {})[f.key] = val; store.set('caseVals', S.caseVals); }
+}
+
+/* ---------- Výzva ---------- */
+function challenge(){
+  var pool0 = CASES.filter(function(c){ return S.role === 'all' || c.role === S.role || c.role === 'vsichni'; });
+  var tried = {}; S.log.forEach(function(e){ tried[e.caseId] = 1; });
+  var pool = pool0.filter(function(c){ return !tried[c.id]; });
+  if (!pool.length) pool = pool0;
+  var d = new Date(), start = new Date(d.getFullYear(), 0, 0);
+  var day = Math.floor((d - start) / 864e5);
+  return pool[(day * 7 + S.challengeOffset) % pool.length];
+}
+function challengeHTML(){
+  var c = challenge(), r = roleById(c.role);
+  var tried = S.log.some(function(e){ return e.caseId === c.id; });
+  return '<span class="eyebrow">' + icon('spark') + 'Výzva na dnes</span>' +
+    '<h3>' + esc(c.title) + '</h3><p>' + esc(c.why) + '</p>' +
+    '<div class="ch-meta">' + icon(r.icon) + esc(r.name) + (tried ? ' · už jste zkoušeli' : '') + '</div>' +
+    '<div class="row"><button class="btn btn-primary btn-sm" data-open="' + c.id + '">Zkusit teď ' + icon('arrow') + '</button>' +
+    '<button class="btn btn-ghost btn-sm" data-act="next-challenge">Jinou výzvu</button></div>';
+}
+function renderChallenges(){ put($('#heroChallenge'), challengeHTML()); put($('#zkChallenge'), challengeHTML()); }
+
+/* ---------- Repertoár ---------- */
+function renderRoles(){
+  var list = [{id:'all', name:'Celý repertoár', short:'Všechna oddělení', icon:'grid'}].concat(ROLES);
+  put($('#roles'), list.map(function(r){
+    var cnt = r.id === 'all' ? CASES.length : CASES.filter(function(c){ return c.role === r.id; }).length;
+    var on = S.role === r.id;
+    return '<button class="role' + (on ? ' on' : '') + '" data-role="' + r.id + '" aria-pressed="' + on + '">' +
+      '<span class="role-ico">' + icon(r.icon) + '</span>' +
+      '<span class="role-name">' + esc(r.name) + '</span>' +
+      '<span class="role-sub">' + esc(r.short) + ' · ' + cnt + '</span></button>';
+  }).join(''));
+}
+function cardHTML(c){
+  var r = roleById(c.role);
+  var n = c.fields.filter(function(f){ return !f.opt; }).length;
+  var tried = S.log.some(function(e){ return e.caseId === c.id; });
+  var fav = isFav(c.id);
+  return '<article class="card">' +
+    '<span class="card-role">' + icon(r.icon) + esc(r.name) + '</span>' +
+    '<h3><button class="stretch" data-open="' + c.id + '">' + esc(c.title) + '</button></h3>' +
+    '<p>' + esc(c.why) + '</p>' +
+    '<span class="card-meta"><span>' + n + ' ' + plural(n, 'údaj', 'údaje', 'údajů') + ' k doplnění</span>' +
+    (tried ? '<span class="badge ok">' + icon('check') + 'Vyzkoušeno</span>' : '') + '</span>' +
+    '<button class="star' + (fav ? ' on' : '') + '" data-fav="' + c.id + '" aria-pressed="' + fav + '" aria-label="' + (fav ? 'Odebrat z oblíbených' : 'Přidat do oblíbených') + ': ' + esc(c.title) + '">' + icon('star') + '</button>' +
+    '</article>';
+}
+function renderList(){
+  var q = norm(S.query.trim());
+  var pass = function(c){ return !S.onlyFavs || isFav(c.id); };
+  var groups = [];
+  if (q) {
+    var items = CASES.filter(function(c){
+      return pass(c) && norm([c.title, c.why, c.tpl, roleById(c.role).name].join(' ')).indexOf(q) !== -1;
+    });
+    groups.push({head:'Výsledky pro „' + esc(S.query.trim()) + '“', sub:items.length + ' ' + plural(items.length, 'prompt', 'prompty', 'promptů') + ' v celém repertoáru', items:items});
+  } else if (S.role === 'all') {
+    ROLES.forEach(function(r){ groups.push({role:r, items:CASES.filter(function(c){ return c.role === r.id && pass(c); })}); });
+  } else {
+    var r = roleById(S.role);
+    groups.push({role:r, items:CASES.filter(function(c){ return c.role === r.id && pass(c); })});
+    if (r.id !== 'vsichni') groups.push({role:roleById('vsichni'), head:'Hodí se všem', items:CASES.filter(function(c){ return c.role === 'vsichni' && pass(c); })});
+  }
+  groups = groups.filter(function(g){ return g.items.length; });
+  var el = $('#list');
+  if (!groups.length) {
+    if (S.onlyFavs && !q) {
+      put(el, '<div class="empty"><h3>Zatím žádné oblíbené</h3><p>Hvězdičkou u promptu si ho uložíte sem. Hodí se na ty, které používáte pořád dokola.</p><div class="row"><button class="btn btn-ghost btn-sm" data-act="only-favs">Zobrazit všechny prompty</button></div></div>');
+    } else {
+      put(el, '<div class="empty"><h3>Nic jsme nenašli</h3><p>Zkuste jiné slovo, třeba „e-mail“, „tabulka“ nebo „premiéra“. Nebo si prompt sestavte sami.</p><div class="row"><button class="btn btn-ghost btn-sm" data-act="clear-search">Zrušit hledání</button><button class="btn btn-primary btn-sm" data-tab="vlastni">Sestavit vlastní prompt</button></div></div>');
+    }
+    return;
+  }
+  put(el, groups.map(function(g){
+    var sub = g.sub || (g.items.length + ' ' + plural(g.items.length, 'prompt', 'prompty', 'promptů'));
+    return '<section class="group"><div class="group-head">' +
+      (g.role ? '<span class="gh-ico">' + icon(g.role.icon) + '</span>' : '') +
+      '<h2>' + (g.head || esc(g.role.name)) + '</h2><span class="gh-sub">' + sub + '</span></div>' +
+      '<div class="cards">' + g.items.map(cardHTML).join('') + '</div></section>';
+  }).join(''));
+}
+function renderFavChip(){
+  var b = $('#favChip');
+  b.setAttribute('aria-pressed', String(S.onlyFavs));
+  b.innerHTML = icon('star') + 'Jen oblíbené' + (S.favs.length ? ' (' + S.favs.length + ')' : '');
+}
+function toggleFav(id){
+  var i = S.favs.indexOf(id);
+  if (i === -1) S.favs.push(id); else S.favs.splice(i, 1);
+  store.set('favs', S.favs);
+  var on = isFav(id);
+  $$('[data-fav="' + id + '"]').forEach(function(b){
+    b.classList.toggle('on', on);
+    b.setAttribute('aria-pressed', String(on));
+    if (b.classList.contains('btn')) b.innerHTML = icon('star') + '<span class="lbl">' + (on ? 'V oblíbených' : 'Do oblíbených') + '</span>';
+  });
+  renderFavChip();
+  if (S.onlyFavs) renderList();
+  renderZkousky();
+  toast(on ? 'Přidáno do oblíbených.' : 'Odebráno z oblíbených.');
+}
+
+/* ---------- Detail promptu ---------- */
+var D = $('#detail'), current = null, lastOpenId = null;
+function fieldHTML(f, val){
+  var id = 'f_' + f.key;
+  var badges = (f.opt ? ' <span class="opt">nepovinné</span>' : '') +
+               (GLOBAL_KEYS.indexOf(f.key) !== -1 ? ' <span class="opt mem">zapamatuji si</span>' : '');
+  var input = f.area
+    ? '<textarea id="' + id + '" data-key="' + f.key + '" rows="5" placeholder="' + esc(f.ph) + '">' + esc(val) + '</textarea>'
+    : '<input id="' + id + '" data-key="' + f.key + '" type="text" placeholder="' + esc(f.ph) + '" value="' + esc(val) + '" autocomplete="off">';
+  return '<div class="field"><label class="flabel" for="' + id + '">' + esc(f.label) + badges + '</label>' + input + '</div>';
+}
+function rateHTML(){
+  return '<h3 class="mini">3. Vyzkoušeli jste to? Jak to pomohlo?</h3>' +
+    '<div class="rate-btns"><button class="rbtn ok" data-act="rate" data-r="ano">Pomohlo</button>' +
+    '<button class="rbtn warn" data-act="rate" data-r="napul">Napůl</button>' +
+    '<button class="rbtn stop" data-act="rate" data-r="ne">Nepomohlo</button></div>' +
+    '<p class="hint">Hodnocení se zapíše do Mých zkoušek. Časem uvidíte, co se vyplatí opakovat.</p>';
+}
+function openCase(id){
+  var c = caseById(id); if (!c) return;
+  current = c; lastOpenId = id;
+  c.fields.forEach(function(f){
+    if (DEFAULTS[f.key]) { var cur = valsFor(c)[f.key]; if (!cur) setVal(c, f, DEFAULTS[f.key]()); }
+  });
+  var r = roleById(c.role), v = valsFor(c), fav = isFav(c.id);
+  var notes = (c.tip ? '<div class="note tip"><strong>' + icon('bulb') + 'Tip</strong><p>' + esc(c.tip) + '</p></div>' : '') +
+              (c.watch ? '<div class="note watch"><strong>' + icon('alert') + 'Pozor</strong><p>' + esc(c.watch) + '</p></div>' : '');
+  put(D, '<div class="dlg">' +
+    '<div class="dlg-head"><div><span class="tag">' + icon(r.icon) + esc(r.name) + '</span><h2 id="dlgTitle">' + esc(c.title) + '</h2></div>' +
+    '<button class="icon-btn" data-act="close" aria-label="Zavřít">' + icon('close') + '</button></div>' +
+    '<div class="dlg-body"><p class="lead">' + esc(c.why) + '</p>' +
+    '<div class="detail-grid"><div><h3 class="mini">1. Doplňte údaje</h3>' +
+    c.fields.map(function(f){ return fieldHTML(f, v[f.key] || ''); }).join('') +
+    '<p class="hint">Nevyplněné údaje zůstanou v hranatých závorkách a doplníte je přímo v AI. Delší vložené texty si aplikace neukládá.</p></div>' +
+    '<div class="preview-col"><h3 class="mini">2. Hotový prompt</h3><div class="preview" id="pv"></div></div></div>' +
+    (notes ? '<div class="notes' + (c.tip && c.watch ? ' two' : '') + '">' + notes + '</div>' : '') +
+    '<div class="rate" id="rateBox">' + rateHTML() + '</div></div>' +
+    '<div class="dlg-foot"><span class="fill-status" id="fillStatus" aria-live="polite"></span>' +
+    '<div class="row"><button class="btn btn-ghost' + (fav ? ' on' : '') + '" data-fav="' + c.id + '" aria-pressed="' + fav + '" aria-label="Oblíbené">' + icon('star') + '<span class="lbl">' + (fav ? 'V oblíbených' : 'Do oblíbených') + '</span></button>' +
+    '<button class="btn btn-primary" data-act="copy">' + icon('copy') + 'Zkopírovat prompt</button></div></div>' +
+    '</div>');
+  updatePreview();
+  document.body.classList.add('modal-open');
+  if (typeof D.showModal === 'function') { if (!D.open) D.showModal(); } else { D.setAttribute('open', ''); }
+  D.scrollTop = 0;
+  var first = D.querySelector('[data-key]');
+  if (first && window.matchMedia('(min-width: 700px)').matches) first.focus();
+}
+function updatePreview(){
+  if (!current) return;
+  var v = valsFor(current);
+  put($('#pv'), renderTemplate(current.tpl, v, true));
+  var req = current.fields.filter(function(f){ return !f.opt; });
+  var filled = req.filter(function(f){ return String(v[f.key] || '').trim(); }).length;
+  $('#fillStatus').innerHTML = filled === req.length
+    ? icon('check') + 'Vše vyplněno, můžete kopírovat.'
+    : 'Vyplněno ' + filled + ' z ' + req.length;
+}
+function closeDlg(){
+  if (typeof D.close === 'function' && D.open) D.close(); else { D.removeAttribute('open'); onDlgClose(); }
+}
+function onDlgClose(){
+  document.body.classList.remove('modal-open');
+  current = null;
+  var t = $('#toast'); if (t.parentNode !== document.body) document.body.appendChild(t);
+  renderList(); renderChallenges(); renderZkousky();
+  if (lastOpenId) { var b = document.querySelector('#list [data-open="' + lastOpenId + '"]'); if (b && S.tab === 'repertoar') b.focus({preventScroll:true}); }
+}
+D.addEventListener('close', onDlgClose);
+function copyCurrent(){
+  var c = current; if (!c) return;
+  var v = valsFor(c);
+  var txt = renderTemplate(c.tpl, v, false);
+  var missing = c.fields.filter(function(f){ return !f.opt && !String(v[f.key] || '').trim(); }).length;
+  copyText(txt).then(function(ok){
+    if (ok) {
+      toast(missing
+        ? 'Zkopírováno. ' + missing + ' ' + plural(missing, 'údaj zůstal', 'údaje zůstaly', 'údajů zůstalo') + ' v hranatých závorkách, doplňte ' + plural(missing, 'ho', 'je', 'je') + ' v AI.'
+        : 'Zkopírováno. Vložte prompt do AI nástroje.');
+    } else {
+      selectEl($('#pv'));
+      toast('Kopírování se nepovedlo. Text je označený, zkopírujte ho klávesami Ctrl+C nebo Cmd+C.');
+    }
+    var rb = $('#rateBox');
+    if (rb && rb.querySelector('[data-act="rate"]')) { rb.classList.remove('pulse'); void rb.offsetWidth; rb.classList.add('pulse'); }
+  });
+}
+function addLog(caseId, title, rating){
+  var e = {id:uid(), caseId:caseId, title:title, date:new Date().toISOString(), rating:rating, note:''};
+  S.log.unshift(e); store.set('log', S.log); updateLogCount();
+  return e;
+}
+function rateCurrent(r){
+  if (!current) return;
+  var e = addLog(current.id, current.title, r);
+  put($('#rateBox'), '<h3 class="mini">' + icon('check') + 'Zapsáno do Mých zkoušek: ' + esc(RLABEL[r]) + '</h3>' +
+    '<div class="field"><label class="flabel" for="noteNew">Poznámka pro příště <span class="opt">nepovinné</span></label>' +
+    '<textarea id="noteNew" data-note="' + e.id + '" rows="2" placeholder="Co fungovalo? Co byste příště napsali jinak?"></textarea></div>');
+  $('#rateBox').classList.remove('pulse');
+  var lvlBefore = levelIndex(uniqueTried() - 1), lvlNow = levelIndex(uniqueTried());
+  toast(lvlNow > lvlBefore && S.log.filter(function(x){ return x.caseId === current.id; }).length === 1
+    ? 'Nová úroveň: ' + LEVELS[lvlNow].name + '!'
+    : 'Díky, zapsáno.');
+}
+
+/* ---------- Vlastní prompt ---------- */
+function renderBuilder(){
+  put($('#bsecs'), BUILD.map(function(b, i){
+    return '<div class="bsec"><div class="bsec-head"><span class="bsec-num">' + (i + 1) + '</span><div><h3><label for="b_' + b.key + '">' + esc(b.name) + '</label></h3><div class="q">' + esc(b.q) + '</div></div></div>' +
+      '<textarea id="b_' + b.key + '" data-b="' + b.key + '" rows="' + (b.key === 'kontext' || b.key === 'ukol' ? 3 : 2) + '" placeholder="' + esc(b.ph) + '">' + esc(S.builder[b.key] || '') + '</textarea>' +
+      '<div class="chips">' + b.chips.map(function(c){ return '<button type="button" data-chip="' + b.key + '" data-text="' + esc(c) + '">+ ' + esc(c) + '</button>'; }).join('') + '</div></div>';
+  }).join(''));
+  $('#optAsk').checked = !!S.builder.ask;
+  $('#optUnsure').checked = !!S.builder.unsure;
+  put($('#refine'), REFINE.map(function(t){ return '<button type="button" data-refine="' + esc(t) + '">' + esc(t) + '</button>'; }).join(''));
+  $('#bCopyBtn').innerHTML = icon('copy') + 'Zkopírovat prompt';
+  renderBuilderOut(); renderSaved();
+}
+function builderText(){
+  var b = S.builder, L = [];
+  var role = String(b.role || '').trim().replace(/[.\s]+$/, '');
+  if (role) L.push(/^jsi\s/i.test(role) ? role + '.' : 'Jsi ' + role + '.');
+  if (String(b.kontext || '').trim()) L.push('Kontext: ' + b.kontext.trim());
+  if (String(b.ukol || '').trim()) L.push('Úkol: ' + b.ukol.trim());
+  if (String(b.format || '').trim()) L.push('Jak má výsledek vypadat: ' + b.format.trim());
+  if (String(b.mantinely || '').trim()) L.push('Pravidla: ' + b.mantinely.trim());
+  if (L.length && b.ask) L.push('Než začneš, zeptej se mě na všechno, co ti k dobrému výsledku chybí.');
+  if (L.length && b.unsure) L.push('Na konci vypiš, co sis domýšlel a čím si nejsi jistý.');
+  return L.join('\n\n');
+}
+function renderBuilderOut(){
+  var b = S.builder;
+  var filled = BUILD.filter(function(x){ return String(b[x.key] || '').trim(); }).length;
+  var meter = $('#meter');
+  meter.className = 'meter ' + (filled >= 5 ? 'l3' : filled >= 3 ? 'l2' : 'l1');
+  $$('i', meter).forEach(function(i, idx){ i.classList.toggle('on', idx < filled); });
+  var msg;
+  if (!String(b.ukol || '').trim()) msg = filled ? '<b>Chybí to hlavní:</b> co má AI udělat (krok 3, Akce).' : '<b>Prázdné jeviště.</b> Začněte krokem 3: co má AI udělat?';
+  else if (filled <= 2) msg = '<b>Skica.</b> Přidejte situaci a formu, výsledek bude přesnější.';
+  else if (filled <= 4) msg = '<b>Dobrá zkouška.</b> Ještě kousek a bude to sedět.';
+  else msg = '<b>Premiérová kvalita.</b> Zkopírujte a vyzkoušejte.';
+  $('#meterText').innerHTML = msg + ' <span style="color:var(--ink-3)">(' + filled + ' z 5)</span>';
+  var t = builderText();
+  put($('#bpv'), t ? esc(t) : '<span class="empty-pv">Začněte vyplňovat. Prompt se tu bude skládat průběžně.</span>');
+}
+function saveBuilder(){ store.set('builder', S.builder); }
+function addChip(key, text){
+  var b = BUILD.filter(function(x){ return x.key === key; })[0]; if (!b) return;
+  var ta = $('#b_' + key), cur = ta.value, cont = /…$/.test(text), t = text.replace(/…$/, '');
+  if (b.mode === 'replace') cur = t;
+  else if (b.mode === 'list') cur = cur.trim() ? cur.trim().replace(/,$/, '') + ', ' + t : t;
+  else cur = cur.trim() ? cur.replace(/\s+$/, '') + ' ' + t : t;
+  if (cont) cur += ' ';
+  ta.value = cur; S.builder[key] = cur; saveBuilder(); renderBuilderOut();
+  ta.focus(); try { ta.setSelectionRange(cur.length, cur.length); } catch(e){}
+}
+function renderSaved(){
+  var el = $('#savedList');
+  if (!S.saved.length) { el.innerHTML = ''; return; }
+  put(el, '<ul class="saved">' + S.saved.map(function(s){
+    return '<li><span title="' + esc(s.name) + '">' + esc(s.name) + '</span><span class="row">' +
+      '<button class="btn btn-ghost btn-sm" data-act="b-load" data-id="' + s.id + '">Načíst</button>' +
+      '<button class="icon-btn sm" data-act="b-del" data-id="' + s.id + '" aria-label="Smazat šablonu ' + esc(s.name) + '">' + icon('trash') + '</button></span></li>';
+  }).join('') + '</ul>');
+}
+
+/* ---------- Kvíz ---------- */
+function renderQuiz(){
+  var Q = S.quiz, el = $('#quiz');
+  if (Q.i >= QUIZ.length) {
+    var n = QUIZ.length, msg = Q.score === n ? 'Výborně. Víte přesně, co do AI patří a co ne.'
+      : Q.score >= n - 3 ? 'Dobrý základ. U otázek, kde jste zaváhali, se vyplatí projít semafor ještě jednou.'
+      : 'Vraťte se k semaforu nahoře a zkuste to znovu. Hlavně u osobních údajů je dobré mít jasno.';
+    put(el, '<div class="quiz-done"><span class="eyebrow">' + icon('shield') + 'Hotovo</span><h3>' + Q.score + ' z ' + n + ' správně</h3><p>' + msg + '</p><button class="btn btn-ghost" data-act="quiz-restart">Zkusit znovu</button></div>');
+    return;
+  }
+  var it = QUIZ[Q.i];
+  var prog = QUIZ.map(function(_, i){ return '<i class="' + (i < Q.i ? 'done' : i === Q.i ? 'now' : '') + '"></i>'; }).join('');
+  var opts = ['green', 'amber', 'red'].map(function(k){
+    var cls = 'q-opt ' + k;
+    if (Q.answered) { if (k === it.a) cls += ' correct'; else if (k === Q.answered) cls += ' wrong'; else cls += ' dim'; }
+    return '<button class="' + cls + '" data-act="quiz-answer" data-a="' + k + '"' + (Q.answered ? ' disabled' : '') + '><span class="dot"></span>' + QLABEL[k] + '</button>';
+  }).join('');
+  var fb = '';
+  if (Q.answered) {
+    var right = Q.answered === it.a;
+    fb = '<div class="q-fb"><strong>' + (right ? 'Správně.' : 'Tady spíš: ' + QLABEL[it.a] + '.') + '</strong>' + esc(it.why) +
+      '<div class="row"><button class="btn btn-primary btn-sm" data-act="quiz-next">' + (Q.i === QUIZ.length - 1 ? 'Zobrazit výsledek' : 'Další situace') + ' ' + icon('arrow') + '</button></div></div>';
+  }
+  put(el, '<div class="quiz-top"><span class="eyebrow">Situace ' + (Q.i + 1) + ' z ' + QUIZ.length + '</span><div class="qprog" aria-hidden="true">' + prog + '</div></div>' +
+    '<h3>' + esc(it.q) + '</h3><div class="q-opts" role="group" aria-label="Vaše odpověď">' + opts + '</div>' + fb);
+}
+
+/* ---------- Moje zkoušky ---------- */
+function uniqueTried(){ var s = {}; S.log.forEach(function(e){ s[e.caseId] = 1; }); return Object.keys(s).length; }
+function levelIndex(n){ var li = 0; LEVELS.forEach(function(l, i){ if (n >= l.min) li = i; }); return li; }
+function updateLogCount(){ $('#logCount').textContent = S.log.length ? String(S.log.length) : ''; }
+function renderZkousky(){
+  var n = uniqueTried(), li = levelIndex(n), L = LEVELS[li], N = LEVELS[li + 1];
+  var pct = N ? Math.round((n - L.min) / (N.min - L.min) * 100) : 100;
+  put($('#zkLevel'), '<span class="eyebrow">Vaše úroveň</span><h2>' + esc(L.name) + '</h2><p>' + esc(L.desc) + '</p>' +
+    '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '" aria-label="Postup k další úrovni"><i style="width:' + pct + '%"></i></div>' +
+    '<div class="bar-meta"><span>' + n + ' ' + plural(n, 'vyzkoušený prompt', 'vyzkoušené prompty', 'vyzkoušených promptů') + '</span>' +
+    '<span>' + (N ? 'Další úroveň: ' + esc(N.name) + ' (ještě ' + (N.min - n) + ')' : 'Nejvyšší úroveň') + '</span></div>' +
+    '<ol class="stages">' + LEVELS.map(function(l, i){ return '<li class="' + (i < li ? 'done' : i === li ? 'now' : '') + '"><span>' + esc(l.name) + '</span></li>'; }).join('') + '</ol>');
+
+  var total = S.log.length;
+  var helped = S.log.filter(function(e){ return e.rating === 'ano'; }).length;
+  var fromRep = {}; S.log.forEach(function(e){ if (caseById(e.caseId)) fromRep[e.caseId] = 1; });
+  var custom = S.log.filter(function(e){ return e.caseId === 'vlastni'; }).length;
+  put($('#zkStats'),
+    '<div class="stat"><b>' + Object.keys(fromRep).length + ' / ' + CASES.length + '</b><span>vyzkoušeno z repertoáru</span></div>' +
+    '<div class="stat"><b>' + custom + '</b><span>' + plural(custom, 'vlastní prompt', 'vlastní prompty', 'vlastních promptů') + '</span></div>' +
+    '<div class="stat"><b>' + (total ? Math.round(helped / total * 100) + ' %' : '–') + '</b><span>pokusů pomohlo</span></div>' +
+    '<div class="stat"><b>' + S.favs.length + '</b><span>v oblíbených</span></div>');
+
+  var favCases = S.favs.map(caseById).filter(Boolean);
+  put($('#zkFavs'), favCases.length
+    ? '<div class="favs-box"><h3 class="mini">Oblíbené prompty</h3><div class="chips">' + favCases.map(function(c){ return '<button type="button" data-open="' + c.id + '">' + icon('star') + esc(c.title) + '</button>'; }).join('') + '</div></div>'
+    : '');
+
+  $('#exportBtn').innerHTML = icon('share') + 'Zkopírovat přehled';
+  var el = $('#zkLog');
+  if (!S.log.length) {
+    put(el, '<li class="empty"><h3>Deník je zatím prázdný</h3><p>Až prompt vyzkoušíte, ohodnoťte ho tlačítkem Pomohlo, Napůl nebo Nepomohlo. Objeví se tady i s poznámkou.</p><div class="row"><button class="btn btn-primary btn-sm" data-tab="repertoar">Vybrat první prompt</button></div></li>');
+    return;
+  }
+  put(el, S.log.map(function(e){
+    var c = caseById(e.caseId);
+    var title = c ? '<button class="link" data-open="' + c.id + '">' + esc(e.title) + '</button>' : '<strong>' + esc(e.title) + '</strong>';
+    return '<li class="log-item"><div class="log-top"><span class="pill ' + (RCLS[e.rating] || 'warn') + '">' + esc(RLABEL[e.rating] || '') + '</span>' + title +
+      '<time datetime="' + esc(e.date) + '">' + fmtDate(e.date) + '</time>' +
+      '<button class="icon-btn sm" data-act="log-del" data-id="' + e.id + '" aria-label="Smazat záznam">' + icon('trash') + '</button></div>' +
+      '<textarea data-note="' + e.id + '" rows="1" aria-label="Poznámka k záznamu" placeholder="Poznámka: co fungovalo, co příště jinak">' + esc(e.note || '') + '</textarea></li>';
+  }).join(''));
+}
+function exportText(){
+  var n = uniqueTried(), L = LEVELS[levelIndex(n)];
+  var total = S.log.length, helped = S.log.filter(function(e){ return e.rating === 'ano'; }).length;
+  var lines = ['Moje zkoušky s AI (Nápověda), stav k ' + fmtDate(new Date().toISOString()),
+    'Úroveň: ' + L.name + ', ' + n + ' ' + plural(n, 'vyzkoušený prompt', 'vyzkoušené prompty', 'vyzkoušených promptů'),
+    'Pomohlo: ' + helped + ' z ' + total + ' ' + plural(total, 'pokusu', 'pokusů', 'pokusů'), ''];
+  S.log.forEach(function(e){
+    lines.push(fmtDate(e.date) + ' | ' + e.title + ' | ' + (RLABEL[e.rating] || ''));
+    if (String(e.note || '').trim()) lines.push('   Poznámka: ' + e.note.trim());
+  });
+  return lines.join('\n');
+}
+
+/* ---------- Záložky a motiv ---------- */
+function setTab(t, silent){
+  if (['repertoar', 'vlastni', 'pravidla', 'zkousky'].indexOf(t) === -1) t = 'repertoar';
+  S.tab = t; store.set('tab', t);
+  $$('.tab').forEach(function(b){ var on = b.dataset.tab === t; b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
+  $$('.panel').forEach(function(p){ p.hidden = p.id !== 'tab-' + t; });
+  if (t === 'zkousky') renderZkousky();
+  if (!silent) window.scrollTo({top:0, behavior:'auto'});
+}
+function isDark(){
+  var t = document.documentElement.getAttribute('data-theme');
+  if (t) return t === 'dark';
+  return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+}
+function applyTheme(){
+  var t = store.get('theme', null);
+  if (t === 'dark' || t === 'light') document.documentElement.setAttribute('data-theme', t);
+  else document.documentElement.removeAttribute('data-theme');
+  $('#themeBtn').innerHTML = isDark() ? icon('sun') : icon('moon');
+  $('#themeBtn').setAttribute('aria-label', isDark() ? 'Přepnout na světlý režim' : 'Přepnout na tmavý režim');
+}
+
+/* ---------- Události ---------- */
+document.addEventListener('click', function(e){
+  var t = e.target;
+  if (t === D) { closeDlg(); return; }
+  var el;
+  if ((el = t.closest('[data-tab]'))) { e.preventDefault(); if (D.open) closeDlg(); setTab(el.dataset.tab); return; }
+  if ((el = t.closest('[data-role]'))) {
+    S.role = el.dataset.role; store.set('role', S.role); S.challengeOffset = 0;
+    renderRoles(); renderList(); renderChallenges(); return;
+  }
+  if ((el = t.closest('[data-fav]'))) { toggleFav(el.dataset.fav); return; }
+  if ((el = t.closest('[data-open]'))) { openCase(el.dataset.open); return; }
+  if ((el = t.closest('[data-chip]'))) { addChip(el.dataset.chip, el.dataset.text); return; }
+  if ((el = t.closest('[data-refine]'))) {
+    var txt = el.dataset.refine;
+    copyText(txt).then(function(ok){ toast(ok ? 'Zkopírováno: „' + txt + '“' : 'Kopírování se nepovedlo.'); });
+    return;
+  }
+  if (!(el = t.closest('[data-act]'))) return;
+  var act = el.dataset.act, id = el.dataset.id;
+  switch (act) {
+    case 'close': closeDlg(); break;
+    case 'copy': copyCurrent(); break;
+    case 'rate': rateCurrent(el.dataset.r); break;
+    case 'theme':
+      store.set('theme', isDark() ? 'light' : 'dark'); applyTheme(); break;
+    case 'next-challenge': S.challengeOffset++; renderChallenges(); break;
+    case 'only-favs': S.onlyFavs = !S.onlyFavs; renderFavChip(); renderList(); break;
+    case 'clear-search': S.query = ''; $('#search').value = ''; renderList(); $('#search').focus(); break;
+    case 'b-copy':
+      var bt = builderText();
+      if (!bt) { toast('Nejdřív něco vyplňte, ideálně krok 3: co má AI udělat.'); $('#b_ukol').focus(); break; }
+      copyText(bt).then(function(ok){
+        if (ok) toast('Zkopírováno. Vložte prompt do AI nástroje.');
+        else { selectEl($('#bpv')); toast('Kopírování se nepovedlo. Text je označený, zkopírujte ho klávesami Ctrl+C nebo Cmd+C.'); }
+        put($('#bRate'), '<h3 class="mini">Vyzkoušeli jste ho? Jak to pomohlo?</h3><div class="rate-btns">' +
+          '<button class="rbtn ok" data-act="b-rate" data-r="ano">Pomohlo</button><button class="rbtn warn" data-act="b-rate" data-r="napul">Napůl</button><button class="rbtn stop" data-act="b-rate" data-r="ne">Nepomohlo</button></div>');
+      });
+      break;
+    case 'b-rate':
+      addLog('vlastni', 'Vlastní prompt: ' + truncate(S.builder.ukol || 'bez úkolu', 60), el.dataset.r);
+      put($('#bRate'), '<h3 class="mini">' + icon('check') + 'Zapsáno do Mých zkoušek</h3>');
+      toast('Díky, zapsáno.'); break;
+    case 'b-example':
+      S.builder = Object.assign(emptyBuilder(), EXAMPLE); saveBuilder(); renderBuilder(); $('#bRate').innerHTML = ''; break;
+    case 'b-clear':
+      S.builder = emptyBuilder(); saveBuilder(); renderBuilder(); $('#bRate').innerHTML = ''; break;
+    case 'b-save':
+      if (!builderText()) { toast('Prázdný prompt uložit nejde. Vyplňte aspoň krok 3.'); break; }
+      var name = $('#saveName').value.trim() || truncate(S.builder.ukol || 'Šablona ' + fmtDate(new Date().toISOString()), 50);
+      S.saved.unshift({id:uid(), name:name, data:Object.assign({}, S.builder)});
+      store.set('saved', S.saved); $('#saveName').value = ''; renderSaved(); toast('Šablona „' + name + '“ je uložená.'); break;
+    case 'b-load':
+      var s = S.saved.filter(function(x){ return x.id === id; })[0];
+      if (s) { S.builder = Object.assign(emptyBuilder(), s.data); saveBuilder(); renderBuilder(); $('#bRate').innerHTML = ''; toast('Načteno: ' + s.name); window.scrollTo({top:0}); }
+      break;
+    case 'b-del':
+      S.saved = S.saved.filter(function(x){ return x.id !== id; }); store.set('saved', S.saved); renderSaved(); break;
+    case 'quiz-answer':
+      if (S.quiz.answered) break;
+      S.quiz.answered = el.dataset.a; if (S.quiz.answered === QUIZ[S.quiz.i].a) S.quiz.score++; renderQuiz();
+      var nx = $('#quiz [data-act="quiz-next"]'); if (nx) nx.focus({preventScroll:true});
+      break;
+    case 'quiz-next': S.quiz.i++; S.quiz.answered = null; renderQuiz(); break;
+    case 'quiz-restart': S.quiz = {i:0, score:0, answered:null}; renderQuiz(); break;
+    case 'log-del':
+      S.log = S.log.filter(function(x){ return x.id !== id; }); store.set('log', S.log); updateLogCount(); renderZkousky(); renderList(); break;
+    case 'export':
+      if (!S.log.length) { toast('Deník je zatím prázdný, není co kopírovat.'); break; }
+      copyText(exportText()).then(function(ok){ toast(ok ? 'Přehled je ve schránce. Můžete ho vložit do e-mailu nebo chatu.' : 'Kopírování se nepovedlo.'); });
+      break;
+    case 'reset':
+      if (!window.confirm('Opravdu smazat oblíbené, deník zkoušek, uložené šablony a vyplněné údaje? Nejde to vrátit.')) break;
+      var theme = store.get('theme', null);
+      store.clear(); if (theme) store.set('theme', theme);
+      S.favs = []; S.log = []; S.saved = []; S.globals = {}; S.caseVals = {}; S.mem = {}; S.builder = emptyBuilder(); S.role = 'all'; S.onlyFavs = false;
+      renderAll(); toast('Vše smazáno. Začínáte od čtené zkoušky.'); break;
+  }
+});
+
+document.addEventListener('input', function(e){
+  var t = e.target;
+  if (t.id === 'search') { S.query = t.value; renderList(); return; }
+  if (t.dataset && t.dataset.key && current) {
+    var f = current.fields.filter(function(x){ return x.key === t.dataset.key; })[0];
+    if (f) { setVal(current, f, t.value); updatePreview(); }
+    return;
+  }
+  if (t.dataset && t.dataset.b) { S.builder[t.dataset.b] = t.value; saveBuilder(); renderBuilderOut(); return; }
+  if (t.dataset && t.dataset.note) {
+    var en = S.log.filter(function(x){ return x.id === t.dataset.note; })[0];
+    if (en) { en.note = t.value; store.set('log', S.log); }
+  }
+});
+document.addEventListener('change', function(e){
+  if (e.target.id === 'optAsk') { S.builder.ask = e.target.checked; saveBuilder(); renderBuilderOut(); }
+  if (e.target.id === 'optUnsure') { S.builder.unsure = e.target.checked; saveBuilder(); renderBuilderOut(); }
+});
+$('.tabs').addEventListener('keydown', function(e){
+  if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+  var tabs = $$('.tab'), i = tabs.indexOf(document.activeElement); if (i === -1) return;
+  var n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+  n.focus(); setTab(n.dataset.tab, true); e.preventDefault();
+});
+if (window.matchMedia) {
+  var mq = window.matchMedia('(prefers-color-scheme: dark)');
+  var onMq = function(){ applyTheme(); };
+  if (mq.addEventListener) mq.addEventListener('change', onMq); else if (mq.addListener) mq.addListener(onMq);
+}
+
+/* ---------- Start ---------- */
+function renderAll(){
+  renderRoles(); renderFavChip(); renderList(); renderChallenges();
+  renderBuilder(); renderQuiz(); renderZkousky(); updateLogCount();
+}
+$('#brandMark').innerHTML = icon('shell');
+$('#searchIco').innerHTML = icon('search');
+$('#infoIco').innerHTML = icon('shield');
+applyTheme();
+renderAll();
+setTab(S.tab, true);
+nbDom(document.body);
+})();
+</script>
+</body>
+</html>
